@@ -75,11 +75,11 @@ class zen_SiteMapXML {
   public function __construct($inline=false, $ping=false, $rebuild=false, $genxml=true) {
     global $db;
     $this->statisticTotalTime = microtime(true);
-    $this->statisticTotalQueries = (method_exists($db, 'queryCount') ? $db->queryCount() : $db->count_queries);
-    $this->statisticTotalQueriesTime = (method_exists($db, 'queryTime') ? $db->queryTime() : $db->total_query_time);
+    $this->statisticTotalQueries = $db->queryCount();
+    $this->statisticTotalQueriesTime = $db->queryTime();
     $this->statisticModuleTime = microtime(true);
-    $this->statisticModuleQueries = (method_exists($db, 'queryCount') ? $db->queryCount() : $db->count_queries);
-    $this->statisticModuleQueriesTime = (method_exists($db, 'queryTime') ? $db->queryTime() : $db->total_query_time);
+    $this->statisticModuleQueries = $db->queryCount();
+    $this->statisticModuleQueriesTime = $db->queryTime();
 
     $this->sitemap = 'sitemap';
     $this->videomap = 'videomap';
@@ -295,8 +295,8 @@ class zen_SiteMapXML {
     $this->_SitemapCloseFile();
     if ($this->sitemapFileItemsTotal > 0) {
       $total_time = microtime(true) - $this->statisticModuleTime;
-      $total_queries = (method_exists($db, 'queryCount') ? $db->queryCount() : $db->count_queries) - $this->statisticModuleQueries;
-      $total_queries_time = (method_exists($db, 'queryTime') ? $db->queryTime() : $db->total_query_time) - $this->statisticModuleQueriesTime;
+      $total_queries = $db->queryCount() - $this->statisticModuleQueries;
+      $total_queries_time = $db->queryTime() - $this->statisticModuleQueriesTime;
       echo sprintf(TEXT_TOTAL_SITEMAP, ($this->sitemapFileNameNumber+1), $this->sitemapFileItemsTotal, $this->sitemapFileSizeTotal, $this->timefmt($total_time), $total_queries, $this->timefmt($total_queries_time)) . '<br />';
     }
     $this->_SitemapReSet();
@@ -732,8 +732,8 @@ class zen_SiteMapXML {
   public function statisticModuleReset() {
     global $db;
     $this->statisticModuleTime = microtime(true);
-    $this->statisticModuleQueries = (method_exists($db, 'queryCount') ? $db->queryCount() : $db->count_queries);
-    $this->statisticModuleQueriesTime = (method_exists($db, 'queryTime') ? $db->queryTime() : $db->total_query_time);
+    $this->statisticModuleQueries = $db->queryCount();
+    $this->statisticModuleQueriesTime = $db->queryTime();
   }
 
   public function _checkDuplicateLoc($loc) {
