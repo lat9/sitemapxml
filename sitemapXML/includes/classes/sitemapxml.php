@@ -48,12 +48,18 @@ class zen_SiteMapXML
         $rebuild = false,
         $genxml = true,
         $stylesheet = '',
+        $base_url_index,
+        $submit_url,
+        $convert_to_utf8,
 
         $sitemapFileItems = 0,
         $sitemapFileSize = 0,
         $sitemapFileItemsTotal = 0,
         $sitemapFileSizeTotal = 0,
+        $sitemapFileItemsMax,
+        $sitemapFile,
         $sitemapFileName,
+        $sitemapType,
         $sitemapFileNameNumber = 0,
         $sitemapFileFooter = '</urlset>',
         $sitemapFileHeader,
@@ -66,6 +72,7 @@ class zen_SiteMapXML
         $fb = '',
         $fp = null,
         $fn = '',
+        $dir_ws,
 
         $time_ping,
 
