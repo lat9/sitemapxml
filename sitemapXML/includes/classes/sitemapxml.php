@@ -50,7 +50,6 @@ class zen_SiteMapXML
         $stylesheet = '',
         $base_url_index,
         $submit_url,
-        $convert_to_utf8,
 
         $sitemapFileItems = 0,
         $sitemapFileSize = 0,
@@ -109,7 +108,7 @@ class zen_SiteMapXML
         $this->savepathIndex = DIR_FS_CATALOG;
         $this->base_url = HTTP_SERVER . DIR_WS_CATALOG . $this->dir_ws;
         $this->base_url_index = HTTP_SERVER . DIR_WS_CATALOG;
-        $this->submit_url = utf8_encode(urlencode($this->base_url_index . $this->sitemapindex));
+        $this->submit_url = urlencode($this->base_url_index . $this->sitemapindex);
         $this->submitFlag = true;
         $this->inline = $inline;
         $this->ping = $ping;
@@ -920,20 +919,6 @@ class zen_SiteMapXML
         }
         $fragment = isset($parsed_url['fragment']) ? '#' . urlencode($parsed_url['fragment']) : '';
         $loc = $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
-        $loc = $this->_utf8_encode($loc);
         return $loc;
-    }
-
-    public function _utf8_encode($str)
-    {
-        if (!isset($this->convert_to_utf8)) {
-            $this->convert_to_utf8 = (strtolower(CHARSET) !== 'utf-8');
-        }
-        if ($this->convert_to_utf8 === true) {
-            if (preg_match('@[\x7f-\xff]@', $str)) {
-                $str = iconv(CHARSET, 'utf-8', $str);
-            }
-        }
-        return $str;
     }
 }
