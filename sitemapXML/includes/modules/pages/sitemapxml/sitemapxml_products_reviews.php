@@ -27,7 +27,7 @@ if ($sitemapXML->SitemapOpen('products_reviews', $last_date)) {
             AND p.products_status = 1
             AND r.status = 1
             AND rd.languages_id IN (" . $sitemapXML->getLanguagesIDs() . ")
-          GROUP BY r.products_id" .
+          GROUP BY r.products_id, rd.languages_id" .
           (SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY !== '' ? " ORDER BY " . SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY : '');
     $reviews = $db->Execute($sql);
 
