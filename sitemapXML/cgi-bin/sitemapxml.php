@@ -30,7 +30,7 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 1 && empty($_GET)) {
 if (isset($_GET['debug']) && $_GET['debug'] === 'yes') {
     define('STRICT_ERROR_REPORTING', true);
     ini_set('display_errors', TRUE);
-    error_reporting(version_compare(PHP_VERSION, 5.3, '>=') ? E_ALL & ~E_DEPRECATED & ~E_NOTICE : version_compare(PHP_VERSION, 6.0, '>=') ? E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_STRICT : E_ALL & ~E_NOTICE);
+    error_reporting(E_ALL & ~E_NOTICE);
 }
 
 if (empty($_SERVER['REQUEST_URI'])) {
