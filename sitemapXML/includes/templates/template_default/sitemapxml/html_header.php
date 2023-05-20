@@ -4,21 +4,15 @@
  *
  * outputs the html header. i,e, everything that comes before the \</head\> tag <br />
  *
- * @package templateSystem
- * @copyright Copyright 2003-2006 Zen Cart Development Team
+ * @copyright Copyright 2003-2020 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: html_header.php 6948 2007-09-02 23:30:49Z drbyte $
+ * @version $Id: Zen4All 2020 May 12 Modified in v1.5.7 $
  */
-if (is_file(DIR_WS_CLASSES . 'Mobile_Detect.php')) {
-  if (!class_exists('Mobile_Detect')) {
-    include_once(DIR_WS_CLASSES . 'Mobile_Detect.php');
-  }
-  $detect = new Mobile_Detect;
-  $isMobile = $detect->isMobile();
-  $isTablet = $detect->isTablet();
-  if (!isset($layoutType)) $layoutType = ($isMobile ? ($isTablet ? 'tablet' : 'mobile') : 'default');
-}
+/* Mobile_Detect.php old school, responsive design doesn't need scripting */
+
+// Prevent clickjacking risks by setting X-Frame-Options:SAMEORIGIN
+header('X-Frame-Options:SAMEORIGIN');
 
 ?>
 <!DOCTYPE html>
