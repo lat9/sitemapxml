@@ -22,7 +22,6 @@ if (!isset($_SESSION['admin_id'])) {
 $module_constant = 'SITEMAPXML_VERSION';
 $module_installer_directory = DIR_FS_ADMIN . 'includes/installers/sitemapxml';
 $module_name = "SitemapXML";
-$zencart_com_plugin_id = 367;
 
 //Just change the stuff above... Nothing down here should need to change
 
@@ -123,14 +122,4 @@ if (version_compare($newest_version, $current_version) > 0) {
     }
 }
 
-// Version Checking
-if ($zencart_com_plugin_id !== 0) {
-    $new_version_details = plugin_version_check_for_updates($zencart_com_plugin_id, $current_version);
-    if (!empty($_GET['gID']) && $_GET['gID'] == $configuration_group_id && $new_version_details !== false) {
-        $messageStack->add(
-            'Version ' . $new_version_details['latest_plugin_version'] . ' of ' . $new_version_details['title'] . ' is available at <a href="' . $new_version_details['link'] . '" target="_blank">[Details]</a>',
-            'caution'
-        );
-    }
-}
 $sitemap_current_version = $current_version;
