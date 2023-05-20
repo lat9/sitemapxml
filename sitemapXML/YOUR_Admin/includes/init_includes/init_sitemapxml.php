@@ -108,6 +108,7 @@ if (version_compare($newest_version, $current_version) > 0) {
             $messageStack->add('Installed ' . $module_name . ' v' . $current_version, 'success');
         }
     }
+    unset($install_configuration);
 
     // add tools menu for Sitemap XML
     $admin_page = 'sitemapxml';

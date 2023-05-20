@@ -10,6 +10,7 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.8 07.07.2016 12:39:33 AndrewBerezin $
  */
+global $current_page;   //- Needed for zc158 since language files are now loaded by a class
 
 if (defined('SITEMAPXML_SITEMAPINDEX')) {
   define('SITEMAPXML_SITEMAPINDEX_HTTP_LINK', HTTP_CATALOG_SERVER . DIR_WS_CATALOG . SITEMAPXML_SITEMAPINDEX . '.xml');
@@ -17,16 +18,16 @@ if (defined('SITEMAPXML_SITEMAPINDEX')) {
 <ol>
 <li>Зарегистрируйтесь: <strong><a href="https://www.google.com/webmasters/tools/home" target="_blank" class="splitPageLink">[Google]</a></strong>, <strong><a href="http://webmaster.yandex.ru/" target="_blank" class="splitPageLink">[Yandex]</a></strong>, <strong><a href="https://ssl.bing.com/webmaster" target="_blank" class="splitPageLink">[Bing]</a></strong>.</li>
 <li>Укажите Ваш Sitemap <input type="text" readonly="readonly" value="' . SITEMAPXML_SITEMAPINDEX_HTTP_LINK . '" size="' . strlen(SITEMAPXML_SITEMAPINDEX_HTTP_LINK) . '" style="border: solid 1px; padding: 0 4px 0 4px;"/> в <strong><a href="https://www.google.com/webmasters/tools/home" target="_blank" class="splitPageLink">[Google]</a></strong>, <strong><a href="http://webmaster.yandex.ru/" target="_blank" class="splitPageLink">[Yandex]</a></strong>, <strong><a href="http://www.bing.com/webmaster/WebmasterAddSitesPage.aspx" target="_blank" class="splitPageLink">[Bing]</a></strong>.</li>
-<li>Укажите адрес Sitemap в Вашем файле <a href="' . HTTP_CATALOG_SERVER . DIR_WS_CATALOG . 'robots.txt' . '" target="_blank" class="splitPageLink">robots.txt</a> (<a href="http://sitemaps.org/protocol.php#submit_robots" target="_blank" class="splitPageLink">подробнее...</a>):<br /><input type="text" readonly="readonly" value="Sitemap: ' . SITEMAPXML_SITEMAPINDEX_HTTP_LINK . '" size="' . strlen('Sitemap: ' . SITEMAPXML_SITEMAPINDEX_HTTP_LINK) . '" style="border: solid 1px; padding: 0 4px 0 4px;"/></li>
+<li>Укажите адрес Sitemap в Вашем файле <a href="' . HTTP_CATALOG_SERVER . DIR_WS_CATALOG . 'robots.txt' . '" target="_blank" class="splitPageLink">robots.txt</a> (<a href="http://sitemaps.org/protocol.php#submit_robots" target="_blank" class="splitPageLink">подробнее...</a>):<br><input type="text" readonly="readonly" value="Sitemap: ' . SITEMAPXML_SITEMAPINDEX_HTTP_LINK . '" size="' . strlen('Sitemap: ' . SITEMAPXML_SITEMAPINDEX_HTTP_LINK) . '" style="border: solid 1px; padding: 0 4px 0 4px;"/></li>
 <li>Оповестите поисковые системы об изменениях Ваших Sitemap XML.</li>
 </ol>
 <p>Чтобы автоматически обновлять sitemaps и автоматически оповещать (пинговать) поисковые системы, необходимо создать cron-задания в Вашей управляющей панели Вашего хостинга.</p>
 <p>Например, для запуска задания ежедневно в 5:0 утра, задайте следующие параметры задания cron (конкретные команды могут отличаться в зависимости от хостинга):</p>
 <div>
-0 5 * * * GET \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\'<br />
-0 5 * * * wget -q \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\' -O /dev/null<br />
-0 5 * * * curl -s \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\'<br />
-0 5 * * * php -f &lt;path to shop&gt;/cgi-bin/sitemapxml.php rebuild=yes ping=yes<br />
+0 5 * * * GET \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\'<br>
+0 5 * * * wget -q \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\' -O /dev/null<br>
+0 5 * * * curl -s \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\'<br>
+0 5 * * * php -f &lt;path to shop&gt;/cgi-bin/sitemapxml.php rebuild=yes ping=yes<br>
 </div>');
   define('TEXT_SITEMAPXML_CHOOSE_PARAMETERS_INLINE', 'Показать файл ' . SITEMAPXML_SITEMAPINDEX . '.xml');
 }
@@ -87,109 +88,3 @@ define('TEXT_UNINSTALL', 'Удалить SitemapXML SQL');
 define('TEXT_UPGRADE_CONFIG_ADD', '');
 define('TEXT_UPGRADE_CONFIG_UPD', '');
 define('TEXT_UPGRADE_CONFIG_DEL', '');
-
-///////////
-define('CFGTITLE_SITEMAPXML_VERSION', 'Версия скрипта');
-define('CFGDESC_SITEMAPXML_VERSION', '<img src="images/icon_popup.gif" alt="SitemapXML Version" border="0">&nbsp;<a href="http://ecommerce-service.com/" target="_blank" style="text-decoration: underline; font-weight: bold;">eCommerce Service</a>');
-define('CFGTITLE_SITEMAPXML_SITEMAPINDEX', 'Имя индексного файла SitemapXML');
-define('CFGDESC_SITEMAPXML_SITEMAPINDEX', 'Имя индексного файла SitemapXML - этот файл должен передаваться поисковым системам');
-define('CFGTITLE_SITEMAPXML_DIR_WS', 'Директория sitemap');
-define('CFGDESC_SITEMAPXML_DIR_WS', 'Директория, в которой будут сохраняться файлы sitemap');
-define('CFGTITLE_SITEMAPXML_COMPRESS', 'Упаковывать файлы SitemapXML');
-define('CFGDESC_SITEMAPXML_COMPRESS', 'Упаковывать файлы SitemapXML');
-define('CFGTITLE_SITEMAPXML_LASTMOD_FORMAT', 'Формат тега Lastmod');
-define('CFGDESC_SITEMAPXML_LASTMOD_FORMAT', 'Формат тега Lastmod:<br />date - Полная дата: YYYY-MM-DD (например 1997-07-16)<br />full -    Полная дата плюс часы, минуты и секунды: YYYY-MM-DDThh:mm:ssTZD (например 1997-07-16T19:20:30+01:00)');
-define('CFGTITLE_SITEMAPXML_EXECUTION_TOKEN', 'Ключ запуска Sitemap XML');
-define('CFGDESC_SITEMAPXML_EXECUTION_TOKEN', 'Используется для предотвращения стороннего не авторизованного запуска генератора Sitemap XML. Чтобы избежать создания намеренной излишней нагрузки на сервер, DDoS-атак.');
-define('CFGTITLE_SITEMAPXML_USE_EXISTING_FILES', 'Использовать существующие файлы XML');
-define('CFGDESC_SITEMAPXML_USE_EXISTING_FILES', 'Использовать существующие файлы XML или перезаписывать их');
-define('CFGTITLE_SITEMAPXML_USE_ONLY_DEFAULT_LANGUAGE', 'Генерировать ссылки только для языка по умолчанию');
-define('CFGDESC_SITEMAPXML_USE_ONLY_DEFAULT_LANGUAGE', 'Генерировать ссылки только для одного языка - языка по умолчанию или  для всех языков');
-//define('CFGTITLE_SITEMAPXML_USE_DEFAULT_LANGUAGE', 'Генерировать параметр language для языка по умолчанию');
-//define('CFGDESC_SITEMAPXML_USE_DEFAULT_LANGUAGE', 'Генерировать в ссылках параметр language для языка по умолчанию');
-define('CFGTITLE_SITEMAPXML_USE_LANGUAGE_PARM', 'Использование параметра language');
-define('CFGDESC_SITEMAPXML_USE_LANGUAGE_PARM', 'Определяет использование параметра language при генерации ссылок для различных языков:<br />true - использовать параметр language,<br />all - использовать параметр language включая страницы для языка по умолчанию,<br />false - не использовать параметр language');
-define('CFGTITLE_SITEMAPXML_PING_URLS', 'Адреса пингуемых сервисов');
-define('CFGDESC_SITEMAPXML_PING_URLS', 'Адреса пингуемых сервисов перечисленные через ;');
-define('CFGTITLE_SITEMAPXML_CHECK_DUPLICATES', 'Проверять дубли адресов');
-define('CFGDESC_SITEMAPXML_CHECK_DUPLICATES', 'true - проверять дубли,<br />mysql - исользовать базу данных для проверки адресов (используется для магазинов с большим количеством товаров),<br />false - не проверять дубли');
-
-define('CFGTITLE_SITEMAPXML_HOMEPAGE_ORDERBY', 'Домашняя страница - сортировка');
-define('CFGDESC_SITEMAPXML_HOMEPAGE_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_HOMEPAGE_CHANGEFREQ', 'Домашняя страница - частота');
-define('CFGDESC_SITEMAPXML_HOMEPAGE_CHANGEFREQ', 'Вероятная частота изменения Домашней страницы');
-
-define('CFGTITLE_SITEMAPXML_PRODUCTS_ORDERBY', 'Товары - сортировка');
-define('CFGDESC_SITEMAPXML_PRODUCTS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_PRODUCTS_CHANGEFREQ', 'Товары - частота');
-define('CFGDESC_SITEMAPXML_PRODUCTS_CHANGEFREQ', 'Вероятная частота изменения страницы Товаров');
-define('CFGTITLE_SITEMAPXML_PRODUCTS_USE_CPATH', 'Использование параметра cPath');
-define('CFGDESC_SITEMAPXML_PRODUCTS_USE_CPATH', 'Использование параметра cPath в адресе товара. Согласуйте это значение со значением переменной $includeCPath в файле init_canonical.php');
-define('CFGTITLE_SITEMAPXML_PRODUCTS_IMAGES', 'Добавлять картинки Товаров');
-define('CFGDESC_SITEMAPXML_PRODUCTS_IMAGES', 'Генерировать теги Image для картинок Товаров');
-define('CFGTITLE_SITEMAPXML_PRODUCTS_IMAGES_CAPTION', 'Использовать Caption/Title');
-define('CFGDESC_SITEMAPXML_PRODUCTS_IMAGES_CAPTION', 'Генерировать Image-теги Title и Caption для картинок Товаров');
-define('CFGTITLE_SITEMAPXML_PRODUCTS_IMAGES_LICENSE', 'Лицензия для картинок Товаров');
-define('CFGDESC_SITEMAPXML_PRODUCTS_IMAGES_LICENSE', 'Адрес URL с лицензией для картинок Товаров');
-
-define('CFGTITLE_SITEMAPXML_CATEGORIES_ORDERBY', 'Категории - сортировка');
-define('CFGDESC_SITEMAPXML_CATEGORIES_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_CATEGORIES_CHANGEFREQ', 'Категории - частота');
-define('CFGDESC_SITEMAPXML_CATEGORIES_CHANGEFREQ', 'Вероятная частота изменения страницы Категорий');
-define('CFGTITLE_SITEMAPXML_CATEGORIES_PAGING', 'Категория - страницы пейджинга');
-define('CFGDESC_SITEMAPXML_CATEGORIES_PAGING', 'Выводить все страницы категории в сайтмап');
-define('CFGTITLE_SITEMAPXML_CATEGORIES_IMAGES', 'Добавлять картинки Категорий');
-define('CFGDESC_SITEMAPXML_CATEGORIES_IMAGES', 'Генерировать теги Image для картинок Категорий');
-define('CFGTITLE_SITEMAPXML_CATEGORIES_IMAGES_CAPTION', 'Использовать Caption/Title');
-define('CFGDESC_SITEMAPXML_CATEGORIES_IMAGES_CAPTION', 'Генерировать Image-теги Title и Caption для картинок Категорий');
-define('CFGTITLE_SITEMAPXML_CATEGORIES_IMAGES_LICENSE', 'Лицензия для картинок Категорий');
-define('CFGDESC_SITEMAPXML_CATEGORIES_IMAGES_LICENSE', 'Адрес URL с лицензией для картинок Категорий');
-
-define('CFGTITLE_SITEMAPXML_REVIEWS_ORDERBY', 'Отзывы на товары - сортировка');
-define('CFGDESC_SITEMAPXML_REVIEWS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_REVIEWS_CHANGEFREQ', 'Отзывы на товары - частота');
-define('CFGDESC_SITEMAPXML_REVIEWS_CHANGEFREQ', 'Вероятная частота изменения страницы Отзывов');
-
-define('CFGTITLE_SITEMAPXML_EZPAGES_ORDERBY', 'EZ-Страницы - сортировка');
-define('CFGDESC_SITEMAPXML_EZPAGES_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_EZPAGES_CHANGEFREQ', 'EZ-Страницы - частота');
-define('CFGDESC_SITEMAPXML_EZPAGES_CHANGEFREQ', 'Вероятная частота изменения EZ-Страницы');
-
-define('CFGTITLE_SITEMAPXML_TESTIMONIALS_ORDERBY', 'Отзывы на магазин - сортировка');
-define('CFGDESC_SITEMAPXML_TESTIMONIALS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_TESTIMONIALS_CHANGEFREQ', 'Отзывы на магазин - частота');
-define('CFGDESC_SITEMAPXML_TESTIMONIALS_CHANGEFREQ', 'Вероятная частота изменения страницы Отзывов на магазин');
-
-define('CFGTITLE_SITEMAPXML_NEWS_ORDERBY', 'News Articles - сортировка');
-define('CFGDESC_SITEMAPXML_NEWS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_NEWS_CHANGEFREQ', 'News Articles - частота');
-define('CFGDESC_SITEMAPXML_NEWS_CHANGEFREQ', 'Вероятная частота изменения страницы News Articles');
-
-define('CFGTITLE_SITEMAPXML_MANUFACTURERS_ORDERBY', 'Бренды - сортировка');
-define('CFGDESC_SITEMAPXML_MANUFACTURERS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_MANUFACTURERS_CHANGEFREQ', 'Бренды - частота');
-define('CFGDESC_SITEMAPXML_MANUFACTURERS_CHANGEFREQ', 'Вероятная частота изменения страницы Брендов');
-define('CFGTITLE_SITEMAPXML_MANUFACTURERS_IMAGES', 'Добавлять картинки Брендов');
-define('CFGDESC_SITEMAPXML_MANUFACTURERS_IMAGES', 'Генерировать теги Image для картинок Брендов');
-define('CFGTITLE_SITEMAPXML_MANUFACTURERS_IMAGES_CAPTION', 'Использовать Caption/Title');
-define('CFGDESC_SITEMAPXML_MANUFACTURERS_IMAGES_CAPTION', 'Генерировать Image-теги Title и Caption для картинок Брендов');
-define('CFGTITLE_SITEMAPXML_MANUFACTURERS_IMAGES_LICENSE', 'Лицензия для картинок Брендов');
-define('CFGDESC_SITEMAPXML_MANUFACTURERS_IMAGES_LICENSE', 'Адрес URL с лицензией для картинок Брендов');
-
-define('CFGTITLE_SITEMAPXML_BOXNEWS_ORDERBY', 'News Box Manager - сортировка');
-define('CFGDESC_SITEMAPXML_BOXNEWS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_BOXNEWS_CHANGEFREQ', 'News Box Manager - частота');
-define('CFGDESC_SITEMAPXML_BOXNEWS_CHANGEFREQ', 'Вероятная частота изменения страницы News Box Manager');
-
-define('CFGTITLE_SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY', 'Отзывы на товар - сортировка');
-define('CFGDESC_SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY', '');
-define('CFGTITLE_SITEMAPXML_PRODUCTS_REVIEWS_CHANGEFREQ', 'Отзывы на товар - частота');
-define('CFGDESC_SITEMAPXML_PRODUCTS_REVIEWS_CHANGEFREQ', 'Вероятная частота изменения страницы Отзывы на товар');
-
-define('CFGTITLE_SITEMAPXML_PLUGINS', 'Активные плагины');
-define('CFGDESC_SITEMAPXML_PLUGINS', 'Какие плагины из существующих используются для генерации карты сайта');
-
-//define('CFGTITLE_', '');
-//define('CFGDESC_', '');
-
-// EOF
