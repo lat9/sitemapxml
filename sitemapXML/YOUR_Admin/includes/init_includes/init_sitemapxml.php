@@ -99,7 +99,7 @@ if (version_compare($newest_version, $current_version) > 0) {
         if (version_compare($newest_version, $installer) >= 0 && version_compare($current_version, $installer) < 0) {
             require $module_installer_directory . '/' . $installer . '.php';
             $current_version = str_replace('_', '.', $installer);
-            $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = :configurationValue:, last_modified=NOW() WHERE configuration_key = :configurationKey:";
+            $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = :configurationValue:, last_modified = now() WHERE configuration_key = :configurationKey:";
             $sql = $db->bindVars($sql, ':configurationValue:', $current_version, 'string');
             $sql = $db->bindVars($sql, ':configurationKey:', $module_constant, 'string');
             $db->Execute($sql);
