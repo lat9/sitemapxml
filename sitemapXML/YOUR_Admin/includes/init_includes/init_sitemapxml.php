@@ -120,32 +120,6 @@ if (!zen_page_key_exists($admin_page) && (int)$configuration_group_id > 0) {
     $messageStack->add('Successfully enabled Sitemap XML Configuration Menu.', 'success');
 }
 
-if (!function_exists('plugin_version_check_for_updates')) {
-  function plugin_version_check_for_updates($fileid = 0, $version_string_to_check = '') {
-    if ($fileid == 0){
-        return FALSE;
-    }
-    $new_version_available = FALSE;
-    $lookup_index = 0;
-    $url = 'https://www.zen-cart.com/downloads.php?do=versioncheck' . '&id=' . (int) $fileid;
-    $data = json_decode(file_get_contents($url), true);
-    if (!$data || !is_array($data)) return false;
-    // compare versions
-    if (version_compare($data[$lookup_index]['latest_plugin_version'], $version_string_to_check) > 0) {
-        $new_version_available = TRUE;
-    }
-    // check whether present ZC version is compatible with the latest available plugin version
-    if (!in_array('v' . PROJECT_VERSION_MAJOR . '.' . PROJECT_VERSION_MINOR, $data[$lookup_index]['zcversions'])) {
-        $new_version_available = FALSE;
-    }
-    if ($version_string_to_check == true) {
-        return $data[$lookup_index];
-    } else {
-        return FALSE;
-    }
-  }
-}
-
 // Version Checking
 if ($zencart_com_plugin_id !== 0) {
     $new_version_details = plugin_version_check_for_updates($zencart_com_plugin_id, $current_version);
