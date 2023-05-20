@@ -8,7 +8,9 @@
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @link http://www.sitemaps.org/
- * @version $Id: sitemapxml.php, v 3.9.2 09.11.2016 13:37:18 AndrewBerezin $
+ * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
+ * 
+ * TC updated for 1.5.8
  */
 
 require('includes/application_top.php');
@@ -31,12 +33,6 @@ $action = (isset($_POST['action']) ? $_POST['action'] : '');
 if (zen_not_null($action)) {
 
   switch ($action) {
-    // demo active test
-    case (zen_admin_demo()):
-      $action = '';
-      $messageStack->add_session(ERROR_ADMIN_DEMO, 'caution');
-      zen_redirect(zen_href_link(FILENAME_SITEMAPXML));
-      break;
 
     case 'upgrade':
     case 'install':
@@ -168,9 +164,9 @@ label.plugin_active {
   text-align: right;
 }
 </style>
-<script type="text/javascript" src="includes/menu.js"></script>
-<script type="text/javascript" src="includes/general.js"></script>
-<script type="text/javascript">
+<script src="includes/menu.js"></script>
+<script src="includes/general.js"></script>
+<script>
   function init()
   {
     cssjsmenu('navbar');
@@ -181,7 +177,7 @@ label.plugin_active {
     }
   }
 </script>
-<script type="text/javascript">
+<script>
 function getFormFields(obj) {
   var getParms = "";
   for (var i=0; i<obj.childNodes.length; i++) {
@@ -252,7 +248,7 @@ if (!defined('SITEMAPXML_VERSION_CURRENT') && !isset($sitemapxml_configuration_g
         </td>
       </tr>
 <?php
-} elseif (defined('SITEMAPXML_VERSION_CURRENT') && !empty($sitemap_current_version) && SITEMAPXML_VERSION_CURRENT != $sitemap_current_version) {
+} elseif (SITEMAPXML_VERSION_CURRENT != $sitemap_current_version) {
 ?>
       <tr>
         <td>
@@ -280,7 +276,7 @@ if (version_compare(PROJECT_VERSION_NAME . ' ' . PROJECT_VERSION_MAJOR . '.' . P
 foreach ($filesArray as $file) {
   if (is_file($file)) {
     if (!@unlink($file)) {
-      $sitemapxml_install_notes .= TEXT_SITEMAPXML_INSTALL_DELETE_FILE . ' - ' . $file . '<br />';
+      $sitemapxml_install_notes .= TEXT_SITEMAPXML_INSTALL_DELETE_FILE . ' - ' . $file . '<br>';
     }
   }
 }
@@ -296,7 +292,7 @@ if ($sitemapxml_install_notes != '') {
 <?php } ?>
 
 <?php
-if (defined('SITEMAPXML_VERSION_CURRENT') && (empty($sitemap_current_version) || SITEMAPXML_VERSION_CURRENT == $sitemap_current_version)) {
+if (defined('SITEMAPXML_VERSION_CURRENT') && SITEMAPXML_VERSION_CURRENT == $sitemap_current_version) {
   $start_parms = '';
   if (defined('SITEMAPXML_EXECUTION_TOKEN') && zen_not_null(SITEMAPXML_EXECUTION_TOKEN)) {
     $start_parms = 'token=' . SITEMAPXML_EXECUTION_TOKEN;
@@ -313,14 +309,14 @@ if (defined('SITEMAPXML_VERSION_CURRENT') && (empty($sitemap_current_version) ||
                   <?php echo zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' .  zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms) . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"'); ?>
                     <?php echo zen_draw_checkbox_field('rebuild', 'yes', false, '', 'id="rebuild"'); ?>
                     <label for="rebuild"><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD; ?></label>
-                    <br class="clearBoth" />
+                    <br class="clearBoth">
                     <?php echo zen_draw_checkbox_field('ping', 'yes', false, '', 'id="ping"'); ?>
                     <label for="ping"><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS_PING; ?></label>
-                    <br class="clearBoth" />
+                    <br class="clearBoth">
                     <?php echo '<button type="submit" title="' . zen_catalog_href_link(FILENAME_SITEMAPXML) . '">' . IMAGE_SEND . '</button>'; ?>
                   </form>
                 </fieldset>
-                <br class="clearBoth" />
+                <br class="clearBoth">
                 <h3><?php echo TEXT_SITEMAPXML_PLUGINS_LIST; ?></h3>
                 <div style="border: solid 1px; padding: 4px;">
                 <fieldset id="plugins">
@@ -328,7 +324,7 @@ if (defined('SITEMAPXML_VERSION_CURRENT') && (empty($sitemap_current_version) ||
 <?php
 echo zen_draw_form('selectPlugins', FILENAME_SITEMAPXML, '', 'post', 'id="selectPlugins"');
 echo zen_draw_hidden_field('action', 'select_plugins');
-if (!($plugins_files = glob(DIR_FS_CATALOG_MODULES . 'pages/sitemapxml/' . 'sitemapxml_*.php'))) $plugins_files = array();
+if (!($plugins_files = glob(DIR_FS_CATALOG_MODULES . 'pages/sitemapxml/' . 'sitemapxml_*.php'))) $plugins_files = [];
 $plugins_files_active = explode(';', SITEMAPXML_PLUGINS);
 foreach ($plugins_files as $plugin_file) {
   $plugin_file = basename($plugin_file);
@@ -336,13 +332,13 @@ foreach ($plugins_files as $plugin_file) {
   $active = in_array($plugin_file, $plugins_files_active);
   echo zen_draw_checkbox_field('plugin[]', $plugin_file, $active, '', 'id="plugin-' . $plugin_name . '"');
 ?>
-                    <label for="<?php echo 'plugin-' . $plugin_name . ''; ?>" class="plugin<?php echo ($active ? '_active' : ''); ?>"><?php echo $plugin_file; ?></label>
+                  <label for="<?php echo 'plugin-' . $plugin_name . ''; ?>" class="plugin<?php echo ($active ? '_active' : ''); ?>"><?php echo $plugin_file; ?></label><br>
 <?php } ?>
-                    <br class="clearBoth" />
+                    <br class="clearBoth">
                     <button type="submit"><?php echo IMAGE_SAVE; ?></button>
                   </form>
                 </fieldset>
-                <br class="clearBoth" />
+                <br class="clearBoth">
                 <fieldset>
                   <legend><?php echo TEXT_SITEMAPXML_FILE_LIST; ?></legend>
                   <table style="width:100%">
@@ -358,8 +354,8 @@ foreach ($plugins_files as $plugin_file) {
                     </tr>
 <?php
 $indexFile = SITEMAPXML_SITEMAPINDEX . (SITEMAPXML_COMPRESS == 'true' ? '.xml.gz' : '.xml');
-if (!($sitemapFiles = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml'))) $sitemapFiles = array();
-if (!($sitemapFilesGZ = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml.gz'))) $sitemapFilesGZ = array();
+if (!($sitemapFiles = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml'))) $sitemapFiles = [];
+if (!($sitemapFilesGZ = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml.gz'))) $sitemapFilesGZ = [];
 $sitemapFiles = array_merge($sitemapFiles, $sitemapFilesGZ);
 if (SITEMAPXML_DIR_WS != '') {
   $sitemapxml_dir_ws = SITEMAPXML_DIR_WS;
@@ -442,7 +438,7 @@ echo zen_draw_form('delete_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="re
 }
 ?>
                   </table>
-                  <br /><a class="link_button" title="<?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?>" href="javascript: window.location.reload()"><?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?></a>
+                  <br><a class="link_button" title="<?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?>" href="javascript: window.location.reload()"><?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?></a>
                 </fieldset>
                  </div>
                </td>
@@ -458,11 +454,11 @@ echo zen_draw_form('delete_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="re
 <?php
 /*
     if (!($robots_txt = @file_get_contents($this->savepath . 'robots.txt'))) {
-      echo '<b>File "robots.txt" not found in save path - "' . $this->savepath . 'robots.txt"</b>' . '<br />';
+      echo '<b>File "robots.txt" not found in save path - "' . $this->savepath . 'robots.txt"</b>' . '<br>';
     } elseif (!preg_match("@Sitemap:\s*(.*)\n@i", $robots_txt . "\n", $m)) {
-      echo '<b>Sitemap location don\'t specify in robots.txt</b>' . '<br />';
+      echo '<b>Sitemap location don\'t specify in robots.txt</b>' . '<br>';
     } elseif (trim($m[1]) != $this->base_url . $this->sitemapindex) {
-      echo '<b>Sitemap location specified in robots.txt "' . trim($m[1]) . '" another than "' . $this->base_url . $this->sitemapindex . '"</b>' . '<br />';
+      echo '<b>Sitemap location specified in robots.txt "' . trim($m[1]) . '" another than "' . $this->base_url . $this->sitemapindex . '"</b>' . '<br>';
     }
 */
 ?>
@@ -492,3 +488,4 @@ echo zen_draw_form('delete_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="re
 </body>
 </html>
 <?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>
+
