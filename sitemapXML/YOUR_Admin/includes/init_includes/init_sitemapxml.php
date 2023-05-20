@@ -54,7 +54,7 @@ if (defined($module_constant)) {
         $db->Execute($sql);
     } elseif ($check->RecordCount() == 1) {
         $configuration_group_id = $check->fields['configuration_group_id'];
-    } else) {
+    } else {
         foreach ($check as $next_group) {
             if (!isset($configuration_group_id)) {
                 $configuration_group_id = $next_group['configuration_group_id'];
