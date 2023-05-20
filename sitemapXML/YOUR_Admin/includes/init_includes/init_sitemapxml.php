@@ -11,6 +11,14 @@ if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
 
+// -----
+// Wait until an admin is logged in before seeing if any initialization steps need to be performed.
+// That ensures that "someone" will see the plugin's installation/update messages!
+//
+if (!isset($_SESSION['admin_id'])) {
+    return;
+}
+
 $module_constant = 'SITEMAPXML_VERSION';
 $module_installer_directory = DIR_FS_ADMIN . 'includes/installers/sitemapxml';
 $module_name = "SitemapXML";
@@ -21,17 +29,16 @@ $zencart_com_plugin_id = 367;
 unset($configuration_group_id);
 if (defined($module_constant)) {
     $current_version = constant($module_constant);
-    $sql = "SELECT configuration_group_id FROM " . TABLE_CONFIGURATION . " WHERE configuration_key = :configurationKey:";
+    $sql = "SELECT configuration_group_id FROM " . TABLE_CONFIGURATION . " WHERE configuration_key = :configurationKey: LIMIT 1";
     $sql = $db->bindVars($sql, ':configurationKey:', $module_constant, 'string');
     $config = $db->Execute($sql);
     $configuration_group_id = $config->fields['configuration_group_id'];
-    $sql = "SELECT configuration_group_id FROM " . TABLE_CONFIGURATION . " WHERE configuration_key LIKE ':configurationKey:%' AND configuration_group_id != :configurationGroupID: GROUP BY configuration_group_id";
+    $sql = "SELECT DISTINCT configuration_group_id FROM " . TABLE_CONFIGURATION . " WHERE configuration_key LIKE ':configurationKey:%' AND configuration_group_id != :configurationGroupID:";
     $sql = $db->bindVars($sql, ':configurationKey:', $module_name, 'noquotestring');
     $sql = $db->bindVars($sql, ':configurationGroupID:', $configuration_group_id, 'integer');
     $check = $db->Execute($sql);
     foreach ($check as $next_group) {
-        echo '<pre>';var_dump($check->fields);echo '</pre>';
-        $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_group_id = :configurationGroupIDnew: WHERE configuration_group_id = :configurationGroupIDold:";
+        $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_group_id = :configurationGroupIDnew: WHERE configuration_group_id = :configurationGroupIDold: LIMIT 1";
         $sql = $db->bindVars($sql, ':configurationGroupIDnew:', $configuration_group_id, 'integer');
         $sql = $db->bindVars($sql, ':configurationGroupIDold:', $next_group['configuration_group_id'], 'integer');
         $db->Execute($sql);
@@ -41,15 +48,16 @@ if (defined($module_constant)) {
     }
 } else {
     $current_version = '0.0.0';
-    $sql = "SELECT configuration_group_id FROM " . TABLE_CONFIGURATION . " WHERE configuration_key LIKE ':configurationKey:%' GROUP BY configuration_group_id";
+    $sql = "SELECT DISTINCT configuration_group_id FROM " . TABLE_CONFIGURATION . " WHERE configuration_key LIKE ':configurationKey:%'";
     $sql = $db->bindVars($sql, ':configurationKey:', $module_name, 'noquotestring');
     $check = $db->Execute($sql);
     if ($check->EOF) {
-        $sql = "INSERT INTO " . TABLE_CONFIGURATION_GROUP . " (configuration_group_title, configuration_group_description, sort_order, visible) VALUES (':configurationGroupTitle:', 'Set :configurationGroupTitle: Options', '1', '1')";
+        $sql =
+            "INSERT INTO " . TABLE_CONFIGURATION_GROUP . " (configuration_group_title, configuration_group_description, sort_order, visible) VALUES (':configurationGroupTitle:', 'Set :configurationGroupTitle: Options', 1, 1)";
         $sql = $db->bindVars($sql, ':configurationGroupTitle:', $module_name, 'noquotestring');
         $db->Execute($sql);
         $configuration_group_id = $db->Insert_ID();
-        $sql = "UPDATE " . TABLE_CONFIGURATION_GROUP . " SET sort_order = :configurationGroupID: WHERE configuration_group_id = :configurationGroupID:";
+        $sql = "UPDATE " . TABLE_CONFIGURATION_GROUP . " SET sort_order = :configurationGroupID: WHERE configuration_group_id = :configurationGroupID: LIMIT 1";
         $sql = $db->bindVars($sql, ':configurationGroupID:', $configuration_group_id, 'integer');
         $db->Execute($sql);
     } elseif ($check->RecordCount() == 1) {
@@ -59,10 +67,7 @@ if (defined($module_constant)) {
             if (!isset($configuration_group_id)) {
                 $configuration_group_id = $next_group['configuration_group_id'];
             } else {
-                $sql = "SELECT * FROM " . TABLE_CONFIGURATION . " WHERE configuration_group_id = :configurationGroupID:";
-                $sql = $db->bindVars($sql, ':configurationGroupID:', $next_group['configuration_group_id'], 'integer');
-                $config = $db->Execute($sql);
-                $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_group_id = :configurationGroupIDnew: WHERE configuration_group_id = :configurationGroupIDold:";
+                $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_group_id = :configurationGroupIDnew: WHERE configuration_group_id = :configurationGroupIDold: LIMIT 1";
                 $sql = $db->bindVars($sql, ':configurationGroupIDnew:', $configuration_group_id, 'integer');
                 $sql = $db->bindVars($sql, ':configurationGroupIDold:', $next_group['configuration_group_id'], 'integer');
                 $db->Execute($sql);
@@ -73,9 +78,10 @@ if (defined($module_constant)) {
         }
     }
     $sql =
-        "INSERT INTO " . TABLE_CONFIGURATION . "
+        "INSERT IGNORE INTO " . TABLE_CONFIGURATION . "
             (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function)
-         VALUES ('Version', :configurationKey:, '0.0.0', 'Indicates the currently installed version of SitemapXML.', :configurationGroupID:, 0, now(), now(), NULL, NULL)";
+         VALUES
+            ('Version', :configurationKey:, '0.0.0', 'Indicates the currently installed version of SitemapXML.', :configurationGroupID:, 0, now(), now(), NULL, NULL)";
     $sql = $db->bindVars($sql, ':configurationKey:', $module_constant, 'string');
     $sql = $db->bindVars($sql, ':configurationGroupID:', $configuration_group_id, 'integer');
     $db->Execute($sql);
@@ -87,37 +93,34 @@ foreach ($installers as $i => $file) {
     $installers[$i] = substr($file, 0, strpos($file, '.php'));
 }
 natsort($installers);
-
 $newest_version = end($installers);
 
-//echo '<pre>';var_dump($newest_version, $current_version, version_compare($newest_version, $current_version));echo '</pre>';
-
 if (version_compare($newest_version, $current_version) > 0) {
-    require_once DIR_WS_MODULES . 'sitemapxml_install.php';
+    require DIR_WS_MODULES . 'sitemapxml_install.php';
     require_once DIR_WS_CLASSES . 'ext_modules.php';
     foreach ($installers as $installer) {
         if (version_compare($newest_version, $installer) >= 0 && version_compare($current_version, $installer) < 0) {
             require $module_installer_directory . '/' . $installer . '.php';
             $current_version = str_replace('_', '.', $installer);
-            $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = :configurationValue:, last_modified = now() WHERE configuration_key = :configurationKey:";
+            $sql = "UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = :configurationValue:, last_modified = now() WHERE configuration_key = :configurationKey: LIMIT 1";
             $sql = $db->bindVars($sql, ':configurationValue:', $current_version, 'string');
             $sql = $db->bindVars($sql, ':configurationKey:', $module_constant, 'string');
             $db->Execute($sql);
             $messageStack->add('Installed ' . $module_name . ' v' . $current_version, 'success');
         }
     }
-}
 
-// add tools menu for Sitemap XML
-$admin_page = 'sitemapxml';
-if (!zen_page_key_exists($admin_page) && (int)$configuration_group_id > 0) {
-    zen_register_admin_page($admin_page, 'BOX_SITEMAPXML', 'FILENAME_SITEMAPXML', '', 'tools', 'Y');
-    $messageStack->add('Successfully enabled Sitemap XML Tool Menu.', 'success');
-}
-$admin_page = 'sitemapxmlConfig';
-if (!zen_page_key_exists($admin_page) && (int)$configuration_group_id > 0) {
-    zen_register_admin_page($admin_page, 'BOX_CONFIGURATION_SITEMAPXML', 'FILENAME_CONFIGURATION', 'gID=' . $configuration_group_id, 'configuration', 'Y');
-    $messageStack->add('Successfully enabled Sitemap XML Configuration Menu.', 'success');
+    // add tools menu for Sitemap XML
+    $admin_page = 'sitemapxml';
+    if (!zen_page_key_exists($admin_page) && (int)$configuration_group_id > 0) {
+        zen_register_admin_page($admin_page, 'BOX_SITEMAPXML', 'FILENAME_SITEMAPXML', '', 'tools', 'Y');
+        $messageStack->add('Successfully enabled Sitemap XML Tool Menu.', 'success');
+    }
+    $admin_page = 'sitemapxmlConfig';
+    if (!zen_page_key_exists($admin_page) && (int)$configuration_group_id > 0) {
+        zen_register_admin_page($admin_page, 'BOX_CONFIGURATION_SITEMAPXML', 'FILENAME_CONFIGURATION', 'gID=' . $configuration_group_id, 'configuration', 'Y');
+        $messageStack->add('Successfully enabled Sitemap XML Configuration Menu.', 'success');
+    }
 }
 
 // Version Checking
