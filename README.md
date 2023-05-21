@@ -1,32 +1,36 @@
 # SitemapXML
 
 ## Version
-v 3.9.6 06.Jul.2017 18:35
+#### v3.9.9 21.May.2023
 
-Author
-Andrew Berezin http://eCommerce-Service.com
+### Authors
+
+Andrew Berezin http://eCommerce-Service.com, @mc12345678 https://github.com/mc12345678, @lat9 https://github.com/lat9
 
 Thanks
 Special thanks to DivaVocals for the quality of the readme.
 
 ## Description
 This Script generates a Sitemap as described here:
-http://www.sitemaps.org/
-http://support.google.com/webmasters/bin/answer.py?hl=en&answer=156184&topic=8476&ctx=topic
 
-Zen-Cart Version
+- https://www.sitemaps.org/
+- https://support.google.com/webmasters/bin/answer.py?hl=en&answer=156184&topic=8476&ctx=topic
+
+It can be downloaded from the Zen Cart Plugins repository here: https://www.zen-cart.com/downloads.php?do=file&id=367
+
+**Note**:  Version 3.9.9 and later require that the store have a `CHARSET` that specifies `utf-8` encoding and a database using a `DB_CHARSET` of either `utf8` or `utf8mb4`.
+
+Zen-Cart Versions
 --------------
-1.3.8, 1.3.9x, 1.5.5, 1.5.6
+1.5.7[a-d], 1.5.8[a]
 
 Support thread
 --------------
-http://www.zen-cart.com/showthread.php?126810-SitemapXML-v-2
+https://www.zen-cart.com/showthread.php?126810-SitemapXML-v-2
 
-http://zen-cart.su/plugins/sitemap-xml/msg7/
+https://zen-cart.su/plugins/sitemap-xml/msg7/
 
-https://github.com/AndrewBerezin/zen-cart-sitemap-xml
-
-https://github.com/mc12345678/zen-cart-sitemap-xml
+https://github.com/lat9/sitemapxml
 
 Affected files
 --------------
@@ -60,13 +64,13 @@ Features:
   5. Reviews
   6. EZ-pages
     * multi-language support,
-    * 'EZ pages rel=nofollow attribute' support (http://www.zen-cart.com/index.php?main_page=product_contrib_info&products_id=944),
+    * 'EZ pages rel=nofollow attribute' support (https://www.zen-cart.com/index.php?main_page=product_contrib_info&products_id=944),
     * 'date_added'/'last_modified' support,
     * check internal links ('alt_url') by "noindex" rule (main_page in ROBOTS_PAGES_TO_SKIP),
     * toc_chapter proccessing
-  7. Testimonial Manager http://www.zen-cart.com/downloads.php?do=file&id=299
-  8. News Box Manager http://www.zen-cart.com/downloads.php?do=file&id=147
-  9. News and Article Manager & Optional Sideboxes http://www.zen-cart.com/downloads.php?do=file&id=791
+  7. Testimonial Manager https://www.zen-cart.com/downloads.php?do=file&id=299
+  8. News Box Manager https://www.zen-cart.com/downloads.php?do=file&id=147
+  9. News and Article Manager & Optional Sideboxes https://www.zen-cart.com/downloads.php?do=file&id=791
   10. Product reviews page
 
 If the products, categories, reviews have not changed since the last generation (time creation corresponding xml-sitemap file), a new xml-sitemap file not created (using existing xml-sitemap).
@@ -105,11 +109,6 @@ Install:
 5. Go to Admin -> Configuration -> Sitemap XML and setup all parameters.
 6. Go to Admin -> Tools -> Sitemap XML (If error messages occur, change permissions on the XML files to 777).
 7. To have this update and automatically notify Google, you will need to set up a Cron job via your host's control panel.
-8. For Zen-Cart version 1.3.9f and earlier. Edit file includes/.htaccess:
-  Find
-  <FilesMatch ".*\.(js|JS|css|CSS|jpg|JPG|gif|GIF|png|PNG|swf|SWF)$">
-  Replace by
-  <FilesMatch ".*\.(js|JS|css|CSS|jpg|JPG|gif|GIF|png|PNG|swf|SWF|xsl|XSL)$">
 
 Upgrade:
 --------------
@@ -118,25 +117,6 @@ Upgrade:
 2. Rename the "YOUR_Admin" folder in the "sitemapXML" folder to match the name of your admin folder.
      sitemapXML/YOUR_Admin/
 3. Upload the files from "sitemapXML" to the root of your store. (DO NOT upload the "sitemapXML" folder, just the CONTENTS of this folder (copy ALL of the add-on files to your store!! Most issues are caused by store owners who decide to NOT load ALL of the module files)
-
-Deleting OLD copies of this mod (circa 1.3.8 - such as version 2.1.0, which was around for a number of years)
---------------
-a) Delete the following files from your admin directory:
-- ./includes/boxes/extra_boxes/googlesitemap_tools_dhtml.php
-- ./includes/extra_datafiles/googlesitemap.php
-- ./includes/languages/english/googlesitemap.php
-- ./includes/languages/english/extra_definitions/googlesitemap.php
-- ./includes/languages/italian/extra_definitions/googlesitemap.php
-- ./includes/languages/italian/googlesitemap.php
-- ./includes/languages/russian/googlesitemap.php
-- ./includes/languages/russian/extra_definitions/googlesitemap.php
-- ./googlesitemap.php
-
-b) Run the following SQL in admin->tools->install SQL Patches:
-- SET @configuration_group_id=0;
-- SELECT (@configuration_group_id:=configuration_group_id) FROM configuration_group WHERE configuration_group_title= 'Google XML Sitemap' LIMIT 1;
-- DELETE FROM configuration WHERE configuration_group_id = @configuration_group_id AND configuration_group_id != 0;
-- DELETE FROM configuration_group WHERE configuration_group_id = @configuration_group_id AND configuration_group_id != 0;
 
 Un-Install:
 --------------
@@ -219,3 +199,20 @@ v 3.9.6 06.07.2019 13:33   - Arrange for PHP 7.3,
                              incorporate fix for responsive_classic,
                              refactored various code.
                              Addressed strict php notifications
+
+v 3.9.7 28/04/2023 (highburyeye)
+
+- Add support for Zen Cart 1.5.8
+
+v 3.9.8 03/05/2023 (highburyeye)
+
+- Additional support for PHP 8.1
+
+v3.9.9 21/05/2023 (lat9)
+
+- Drops support for Zen Cart versions prior to 1.5.7; tested on PHP versions 7.3 through 8.2 and Zen Cart 1.5.7 through 1.5.8a.
+- Provide interoperability with PHP 8.2, defining all class variables and removing usage of the now-deprecated `utf8_encode` function.
+- Removes the automatic Zen Cart check for plugin updates as that can have adverse performance implications for a site's admin processing.
+- Corrects MySQL fatal errors when run with more strict (e.g. MySQL 8) SQL servers.
+- "Refreshed" the majority of the PHP files to use now-current PHP and Zen Cart programming styles and removing code that was required for Zen Cart versions prior to 1.5.7 and/or PHP versions less than 7.3.
+- Removed configuration multi-language support.
