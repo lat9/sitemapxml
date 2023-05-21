@@ -25,4 +25,15 @@ if ($current_version !== $installer) {
          WHERE configuration_key = 'SITEMAPXML_PING_URLS'
          LIMIT 1"
     );
+
+    // -----
+    // Update the plugin's version configuration value's description, removing the no-longer
+    // valid link.
+    //
+    $db->Execute(
+        "UPDATE " . TABLE_CONFIGURATION . "
+            SET configuration_description = 'SitemapXML Version'
+         WHERE configuration_key = 'SITEMAPXML_VERSION'
+         LIMIT 1"
+    );
 }
