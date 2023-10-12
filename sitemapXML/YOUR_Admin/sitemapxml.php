@@ -118,8 +118,8 @@ label {
         <script>
 function getFormFields(obj)
 {
-    var getParms = '';
-    for (var i=0; i<obj.childNodes.length; i++) {
+    let getParms = '';
+    for (let i=0; i<obj.childNodes.length; i++) {
         if (obj.childNodes[i].name === 'securityToken') {
             continue;
         }
@@ -142,7 +142,7 @@ function getFormFields(obj)
             }
         }
         if (obj.childNodes[i].tagName == 'SELECT') {
-            var sel = obj.childNodes[i];
+            let sel = obj.childNodes[i];
             getParms += '&' + sel.name + '=' + sel.options[sel.selectedIndex].value;
         }
     }
