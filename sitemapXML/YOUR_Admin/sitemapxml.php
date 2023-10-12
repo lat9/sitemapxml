@@ -201,7 +201,7 @@ foreach ($plugins_files as $plugin_file) {
 
 ?>
                                 <?php echo zen_draw_checkbox_field('plugin[]', $plugin_file, $active, '', 'id="plugin-' . $plugin_name . '"'); ?>
-                                <label for="<?php echo 'plugin-' . $plugin_name . ''; ?>" class="plugin<?php echo ($active === true ? '_active' : ''); ?>"><?php echo $plugin_file; ?></label><br>
+                                <label for="<?php echo 'plugin-' . $plugin_name; ?>" class="plugin<?php echo ($active === true ? '_active' : ''); ?>"><?php echo $plugin_file; ?></label><br>
 <?php
 }
 ?>
