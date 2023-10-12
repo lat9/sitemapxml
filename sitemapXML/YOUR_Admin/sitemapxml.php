@@ -258,7 +258,7 @@ if (SITEMAPXML_DIR_WS !== '') {
 }
 sort($sitemapFiles);
 
-if (in_array(DIR_FS_CATALOG . $indexFile, $sitemapFiles)) {
+if (is_array($sitemapFiles) && in_array(DIR_FS_CATALOG . $indexFile, $sitemapFiles)) {
     $sitemapFiles[] = DIR_FS_CATALOG . $indexFile;
 }
 $sitemapFiles = array_unique($sitemapFiles);
