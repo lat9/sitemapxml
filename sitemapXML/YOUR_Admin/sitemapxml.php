@@ -168,7 +168,7 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
                             <h3><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS; ?></h3>
                         </div>
                         <div class="panel-body">
-                            <?php echo zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"'); ?>
+                            <?php echo zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="window.open(\'' . $submit_link . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"'); ?>
                                 <?php echo zen_draw_checkbox_field('rebuild', 'yes', false, '', 'id="rebuild"'); ?>
                                 <label for="rebuild"><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD; ?></label>
                                 <br>
@@ -214,7 +214,7 @@ foreach ($plugins_files as $plugin_file) {
 
             <h3><?php echo TEXT_SITEMAPXML_FILE_LIST; ?></h3>
             <div>
-                <button onclick="javascript: window.location.reload();"><?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?></button>
+                <button onclick="window.location.reload();"><?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?></button>
             </div>
             <br>
             <table class="table table-sm table-responsive table-hover">
