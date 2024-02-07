@@ -452,14 +452,14 @@ class zen_SiteMapXML
         return $GLOBALS['sniffer']->field_exists($table, $column);
     }
 
-    public function imagesTags($images, string $caption = 'true', string $license_url = '')
+    public function imagesTags($images, string $caption = 'true', string $license_url = ''): string
     {
-        $tags = '';
         if (!is_array($images)) {
             // Provided image is not in format to support processing.
-            return $tags;
+            return '';
         }
 
+        $tags = '';
         foreach ($images as $image) {
             $image['title'] = htmlspecialchars($image['title']);
             $loc = HTTP_SERVER . DIR_WS_CATALOG . $image['file'];
@@ -602,47 +602,56 @@ class zen_SiteMapXML
             echo TEXT_ERROR_CURL_INIT . '<br>';
             return false;
         }
-        $url = str_replace('&amp;', '&', $url);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        if ($read === 'page') {
-          curl_setopt($ch, CURLOPT_HEADER, 0);
-          curl_setopt($ch, CURLOPT_NOBODY, 0);
-          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        } else {
-          curl_setopt($ch, CURLOPT_HEADER, 1);
-          curl_setopt($ch, CURLOPT_NOBODY, 1);
-          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-        }
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
 
+        $url = str_replace('&amp;', '&', $url);
+
+        $curl_options = [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FRESH_CONNECT => 1,
+        ];
+        if ($read === 'page') {
+            $curl_page_options = [
+                CURLOPT_HEADER => 0,
+                CURLOPT_NOBODY => 0,
+                CURLOPT_FOLLOWLOCATION => 1,
+            ];
+        } else {
+            $curl_page_options = [
+                CURLOPT_HEADER => 1,
+                CURLOPT_NOBODY => 1,
+                CURLOPT_FOLLOWLOCATION => 0,
+            ];
+        }
+        $curl_options = array_merge($curl_options, $curl_page_options);
         if (CURL_PROXY_REQUIRED === 'True') {
             $proxy_tunnel_flag = (defined('CURL_PROXY_TUNNEL_FLAG') && strtoupper(CURL_PROXY_TUNNEL_FLAG) === 'FALSE') ? false : true;
-            curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, $proxy_tunnel_flag);
-            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-            curl_setopt($ch, CURLOPT_PROXY, CURL_PROXY_SERVER_DETAILS);
+            $curl_options[CURLOPT_HTTPPROXYTUNNEL] = $proxy_tunnel_flag;
+            $curl_options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;
+            $curl_options[CURLOPT_PROXY] = CURL_PROXY_SERVER_DETAILS;
         }
+        curl_setopt_array($ch, $curl_options);
 
         if (!$result = curl_exec($ch)) {
             echo sprintf(TEXT_ERROR_CURL_EXEC, curl_error($ch), $url) . '<br>';
             return false;
-        } else {
-            $info = curl_getinfo($ch);
-            curl_close($ch);
-            if (empty($info['http_code'])) {
-                echo sprintf(TEXT_ERROR_CURL_NO_HTTPCODE, $url) . '<br>';
-            } elseif ($info['http_code'] != 200) {
-                echo sprintf(TEXT_ERROR_CURL_ERR_HTTPCODE, $info['http_code'], $url) . '<br>';
+        }
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+        if (empty($info['http_code'])) {
+            echo sprintf(TEXT_ERROR_CURL_NO_HTTPCODE, $url) . '<br>';
+        } elseif ($info['http_code'] != 200) {
+            echo sprintf(TEXT_ERROR_CURL_ERR_HTTPCODE, $info['http_code'], $url) . '<br>';
+        }
+        if ($read === 'page') {
+            if ($info['size_download'] == 0) {
+                echo sprintf(TEXT_ERROR_CURL_0_DOWNLOAD, $url) . '<br>';
             }
-            if ($read === 'page') {
-                if ($info['size_download'] == 0) {
-                    echo sprintf(TEXT_ERROR_CURL_0_DOWNLOAD, $url) . '<br>';
-                }
-                if (isset($info['download_content_length']) && $info['download_content_length'] > 0 && $info['download_content_length'] != $info['size_download']) {
-                    echo sprintf(TEXT_ERROR_CURL_ERR_DOWNLOAD, $url, $info['size_download'], $info['download_content_length']) . '<br>';
+            if (isset($info['download_content_length']) && $info['download_content_length'] > 0 && $info['download_content_length'] != $info['size_download']) {
+                echo sprintf(TEXT_ERROR_CURL_ERR_DOWNLOAD, $url, $info['size_download'], $info['download_content_length']) . '<br>';
             }
             $info['html_page'] = $result;
-          }
         }
         return $info;
     }
