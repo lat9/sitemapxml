@@ -19,6 +19,9 @@ $define = [
     'TEXT_SITEMAPXML_INSTRUCTIONS_HEAD' => 'Создать / обновить Ваши Sitemap:',
     'TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD' => 'Перезаписать все существующие файлы sitemap*.xml!',
 
+    'ERROR_SITEMAPXML_TOKEN_INVALID_HDR' => 'Sitemaps cannot be created',
+    'ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE' => 'The execution-token (%1$s) you supplied contains invalid characters.',
+
     'TEXT_SITEMAPXML_PLUGINS_LIST' => 'Плагины',
     'TEXT_SITEMAPXML_PLUGINS_LIST_SELECT' => 'Отметьте активные плагины',
 

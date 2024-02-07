@@ -112,6 +112,22 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
         <div class="row">
             <h2><? TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
             <div class="col-md-6">
+
+<?php
+$token_value_ok = (SITEMAPXML_EXECUTION_TOKEN !== '' && preg_match('/[^\/0-9a-zA-Z_.-]/', SITEMAPXML_EXECUTION_TOKEN) !== 1);
+if ($token_value_ok === false) {
+?>
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3><?= ERROR_SITEMAPXML_TOKEN_INVALID_HDR ?></h3>
+                    </div>
+                    <div class="panel-body">
+                        <p><?= sprintf(ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE, SITEMAPXML_EXECUTION_TOKEN) ?></p>
+                    </div>
+                </div>
+<?php
+} else {
+?>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD ?></h3>
@@ -122,6 +138,9 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
                         <?= '</form>' . PHP_EOL ?>
                     </div>
                 </div>
+<?php
+}
+?>
             </div>
             <div class="col-md-6">
                 <div class="panel panel-default">
