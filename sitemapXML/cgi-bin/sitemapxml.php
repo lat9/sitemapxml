@@ -10,8 +10,8 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.8 07.07.2016 12:39:33 AndrewBerezin $
  */
-// php -f /home/XXXXXXX/domains/XXXX.ru/public_html/cgi-bin/sitemapxml.php rebuild=yes ping=yes
-// /usr/local/bin/php -f /home/XXXXXXX/data/www/XXXX.ru/cgi-bin/sitemapxml.php rebuild=yes ping=yes
+// php -f /home/XXXXXXX/domains/XXXX.ru/public_html/cgi-bin/sitemapxml.php rebuild=yes
+// /usr/local/bin/php -f /home/XXXXXXX/data/www/XXXX.ru/cgi-bin/sitemapxml.php rebuild=yes
 
 if (!is_file(__DIR__ . '/includes/configure.php')) {
     chdir(__DIR__ . '/../');

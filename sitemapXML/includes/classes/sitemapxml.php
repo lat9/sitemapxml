@@ -44,7 +44,6 @@ class zen_SiteMapXML
         $sitemapItems = [],
         $submitFlag = true,
         $inline = false,
-        $ping = false,
         $rebuild = false,
         $genxml = true,
         $stylesheet = '',
@@ -82,7 +81,7 @@ class zen_SiteMapXML
         $statisticModuleQueries = 0,
         $statisticModuleQueriesTime = 0;
 
-    public function __construct($inline = false, $ping = false, $rebuild = false, $genxml = true)
+    public function __construct($inline = false, $rebuild = false, $genxml = true)
     {
         global $db;
 
@@ -111,7 +110,6 @@ class zen_SiteMapXML
         $this->submit_url = urlencode($this->base_url_index . $this->sitemapindex);
         $this->submitFlag = true;
         $this->inline = $inline;
-        $this->ping = $ping;
         $this->rebuild = $rebuild;
         $this->checkDuplicates = SITEMAPXML_CHECK_DUPLICATES;
         $db->Execute("DROP TABLE IF EXISTS " . TABLE_SITEMAPXML_TEMP);
@@ -124,7 +122,7 @@ class zen_SiteMapXML
             $db->Execute($sql);
         }
 
-        $this->checkurl = (SITEMAPXML_CHECK_URL === 'true' ? true : false);
+        $this->checkurl = (SITEMAPXML_CHECK_URL === 'true');
         $this->genxml = $genxml;
         $this->sitemapFileFooter = '</urlset>';
         $this->sitemapFileBuffer = '';
@@ -402,16 +400,6 @@ class zen_SiteMapXML
             }
         }
 
-        if ($this->ping) {
-            if ($this->inline) {
-                ob_start();
-            }
-            $this->_SitemapPing();
-            if ($this->inline) {
-                ob_end_clean();
-            }
-        }
-
         if ($this->inline) {
             die();
         }
@@ -597,36 +585,6 @@ class zen_SiteMapXML
         $header .= '<!-- generator="Zen-Cart SitemapXML" ' . SITEMAPXML_VERSION . ' -->' . "\n";
         $header .= '<!-- ' . $this->sitemapFileName . ' created at ' . date('Y-m-d H:i:s') . ' -->' . "\n";
         return $header;
-    }
-
-    public function _SitemapPing()
-    {
-        if ($this->submitFlag && SITEMAPXML_PING_URLS !== '') {
-            echo '<h3>' . TEXT_HEAD_PING . '</h3>';
-            $pingURLs = explode(';', SITEMAPXML_PING_URLS);
-            foreach ($pingURLs as $pingURL) {
-                if (trim($pingURL) === '') {
-                    continue;
-                }
-                $pingURLarray = explode('=>', $pingURL);
-                if (trim($pingURLarray[0]) === '') {
-                    continue;
-                }
-                if (!isset($pingURLarray[1])) {
-                    $pingURLarray[1] = $pingURLarray[0];
-                }
-                $pingURLarray[0] = trim($pingURLarray[0]);
-                $pingURLarray[1] = trim($pingURLarray[1]);
-                $pingFullURL = sprintf($pingURLarray[1], $this->submit_url);
-                echo '<h4>' . TEXT_HEAD_PING . ' ' . $pingURLarray[0] . '</h4>';
-                echo $pingFullURL . '<br />';
-                echo '<div style="background-color: #FFFFCC); border: 1px solid #000000; padding: 5px">';
-                if ($info = $this->_curlExecute($pingFullURL, 'page')) {
-                    echo $this->_clearHTML($info['html_page']);
-                }
-                echo '</div>';
-            }
-        }
     }
 
     public function _clearHTML($html)

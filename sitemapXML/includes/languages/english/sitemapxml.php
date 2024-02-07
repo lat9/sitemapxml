@@ -10,7 +10,6 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.8 07.07.2016 12:39:33 AndrewBerezin $
  */
-
 define('NAVBAR_TITLE', 'SiteMapXML');
 define('HEADING_TITLE', 'SiteMapXML (' . SITEMAPXML_VERSION . ')');
 
@@ -28,8 +27,6 @@ define('TEXT_FAILED_TO_CHMOD', 'File "%s" is Read-Only. You may need to use your
 
 define('TEXT_HEAD_SITEMAP_INDEX', 'Sitemap Index');
 define('TEXT_HEAD_SITEMAP_INDEX_NONE', 'Sitemap Index not generated: no sitemaps found (no plugins selected)');
-
-define('TEXT_HEAD_PING', 'Ping');
 
 define('TEXT_ERROR_CURL_NOT_FOUND', 'CURL functions not found - required for ping/checkURL functions');
 define('TEXT_ERROR_CURL_INIT', 'cURL Error: init cURL');
@@ -58,5 +55,3 @@ define('TEXT_ERRROR_EZPAGES_OUTOFBASE', 'EZ-Page ignored (out of base url): "<b>
 define('TEXT_ERRROR_EZPAGES_ROBOTS', 'EZ-Page ignored (found in ROBOTS_PAGES_TO_SKIP): "<b>%s</b>" (%s)');
 
 define('TEXT_HEAD_BOXNEWS', 'News Box Manager Sitemap');
-
-// EOF

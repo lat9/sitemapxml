@@ -36,7 +36,6 @@ $breadcrumb->add(NAVBAR_TITLE);
 
 $inline = (isset($_GET['inline']) && $_GET['inline'] === 'yes');
 $genxml  = (!isset($_GET['genxml']) || $_GET['genxml'] !== 'no');
-$ping = (isset($_GET['ping']) && $_GET['ping'] === 'yes');
 $checkurl = (isset($_GET['checkurl']) && $_GET['checkurl'] === 'yes');
 $rebuild = (isset($_GET['rebuild']) && $_GET['rebuild'] === 'yes');
 
@@ -46,7 +45,7 @@ if (SITEMAPXML_EXECUTION_TOKEN !== '' && (!isset($_GET['token']) || SITEMAPXML_E
     exit(0);
 }
 
-$sitemapXML = new zen_SiteMapXML($inline, $ping, $rebuild, $genxml);
+$sitemapXML = new zen_SiteMapXML($inline, $rebuild, $genxml);
 
 $sitemapXML->setCheckURL($checkurl);
 

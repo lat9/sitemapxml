@@ -15,25 +15,10 @@
  */
 require 'includes/application_top.php';
 
-$sql = "SELECT configuration_value FROM " . TABLE_CONFIGURATION . " WHERE configuration_key = 'SITEMAPXML_VERSION' LIMIT 1";
-$version = $db->Execute($sql);
-if (!$version->EOF) {
-    define('SITEMAPXML_VERSION_CURRENT', $version->fields['configuration_value']);
-}
-
 $action = $_POST['action'] ?? '';
 
 if ($action !== '') {
     switch ($action) {
-        case 'uninstall':
-            require DIR_WS_MODULES . 'sitemapxml_install.php';
-            require_once DIR_WS_CLASSES . 'ext_modules.php';
-            $ext_modules = new ext_modules();
-            $ext_modules->uninstall_configuration('SITEMAPXML_');
-            $ext_modules->uninstall_admin_pages(['sitemapxml', 'sitemapxmlConfig']);
-            zen_redirect(zen_href_link(FILENAME_SITEMAPXML));
-            break;
-
         case 'view_file':
         case 'truncate_file':
         case 'delete_file':
@@ -97,10 +82,10 @@ if ($action !== '') {
 }
 ?>
 <!DOCTYPE html>
-<html <?php echo HTML_PARAMS; ?>>
-    <head>
-        <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
-        <style>
+<html <?= HTML_PARAMS ?>>
+<head>
+    <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
+    <style>
 .index, label.plugin_active, form#selectPlugins input.selected {
     font-weight: bold;
 }
@@ -114,8 +99,8 @@ label {
     border: solid 1px black;
     padding: 1em;
 }
-        </style>
-        <script>
+    </style>
+    <script>
 function getFormFields(obj)
 {
     var getParms = '';
@@ -150,44 +135,38 @@ function getFormFields(obj)
     getParms = getParms.replace(/ /g, '+');
     return getParms;
 }
-        </script>
-    </head>
-    <body>
+    </script>
+</head>
+<body>
 <?php
 $start_parms = (SITEMAPXML_EXECUTION_TOKEN === '') ? '' : ('token=' . SITEMAPXML_EXECUTION_TOKEN);
 $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
 ?>
-        <?php require DIR_WS_INCLUDES . 'header.php'; ?>
-        <div class="container-fluid">
-            <h1><?php echo HEADING_TITLE . (defined('SITEMAPXML_VERSION_CURRENT') ? (' <small>v' . SITEMAPXML_VERSION_CURRENT . '</small>') : ''); ?></h1>
-            <div class="row">
-                <h2><?php echo TEXT_SITEMAPXML_INSTRUCTIONS_HEAD; ?></h2>
-                <div class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS; ?></h3>
-                        </div>
-                        <div class="panel-body">
-                            <?php echo zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"'); ?>
-                                <?php echo zen_draw_checkbox_field('rebuild', 'yes', false, '', 'id="rebuild"'); ?>
-                                <label for="rebuild"><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD; ?></label>
-                                <br>
-                                <?php echo zen_draw_checkbox_field('ping', 'yes', false, '', 'id="ping"'); ?>
-                                <label for="ping"><?php echo TEXT_SITEMAPXML_CHOOSE_PARAMETERS_PING; ?></label>
-                                <br>
-                                <button type="submit"><?php echo IMAGE_SEND; ?></button>
-                            <?php echo '</form>' . PHP_EOL; ?>
-                        </div>
+    <?php require DIR_WS_INCLUDES . 'header.php'; ?>
+    <div class="container-fluid">
+        <h1><?= HEADING_TITLE ?> <small>v<?= SITEMAPXML_VERSION ?></small></h1>
+        <div class="row">
+            <h2><? TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS ?></h3>
+                    </div>
+                    <div class="panel-body">
+                        <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>
+                            <button type="submit"><?= IMAGE_SEND ?></button>
+                        <?= '</form>' . PHP_EOL ?>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3><?php echo TEXT_SITEMAPXML_PLUGINS_LIST_SELECT; ?></h3>
-                        </div>
-                        <div class="panel-body">
-                            <?php echo zen_draw_form('selectPlugins', FILENAME_SITEMAPXML, '', 'post', 'id="selectPlugins"'); ?>
-                                <?php echo zen_draw_hidden_field('action', 'select_plugins'); ?>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><?= TEXT_SITEMAPXML_PLUGINS_LIST_SELECT ?></h3>
+                    </div>
+                    <div class="panel-body">
+                        <?= zen_draw_form('selectPlugins', FILENAME_SITEMAPXML, '', 'post', 'id="selectPlugins"') ?>
+                            <?= zen_draw_hidden_field('action', 'select_plugins') ?>
 <?php
 $plugins_files = glob(DIR_FS_CATALOG_MODULES . 'pages/sitemapxml/sitemapxml_*.php');
 if (empty($plugins_files)) {
@@ -200,37 +179,37 @@ foreach ($plugins_files as $plugin_file) {
     $active = in_array($plugin_file, $plugins_files_active);
 
 ?>
-                                <?php echo zen_draw_checkbox_field('plugin[]', $plugin_file, $active, '', 'id="plugin-' . $plugin_name . '"'); ?>
-                                <label for="<?php echo 'plugin-' . $plugin_name . ''; ?>" class="plugin<?php echo ($active === true ? '_active' : ''); ?>"><?php echo $plugin_file; ?></label><br>
+                            <?= zen_draw_checkbox_field('plugin[]', $plugin_file, $active, '', 'id="plugin-' . $plugin_name . '"') ?>
+                            <label for="<?= 'plugin-' . $plugin_name ?>" class="plugin<?= ($active === true ? '_active' : '') ?>"><?= $plugin_file ?></label><br>
 <?php
 }
 ?>
-                                <button type="submit"><?php echo IMAGE_SAVE; ?></button>
-                            <?php echo '</form>' . PHP_EOL; ?>
-                        </div>
+                            <button type="submit"><?= IMAGE_SAVE ?></button>
+                        <?= '</form>' . PHP_EOL ?>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <h3><?php echo TEXT_SITEMAPXML_FILE_LIST; ?></h3>
-            <div>
-                <button onclick="javascript: window.location.reload();"><?php echo TEXT_SITEMAPXML_RELOAD_WINDOW; ?></button>
-            </div>
-            <br>
-            <table class="table table-sm table-responsive table-hover">
-                <thead>
-                    <tr class="dataTableHeadingRow">
-                        <th class="dataTableHeadingContent"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_FNAME; ?></th>
-                        <th class="dataTableHeadingContent text-center"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_FSIZE; ?></th>
-                        <th class="dataTableHeadingContent text-center"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_FTIME; ?></th>
-                        <th class="dataTableHeadingContent text-center"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_FPERMS; ?></th>
-                        <th class="dataTableHeadingContent text-center"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_TYPE; ?></th>
-                        <th class="dataTableHeadingContent text-center"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_ITEMS; ?></th>
-                        <th class="dataTableHeadingContent text-center"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_COMMENTS; ?></th>
-                        <th class="dataTableHeadingContent text-right"><?php echo TEXT_SITEMAPXML_FILE_LIST_TABLE_ACTION; ?></th>
-                    </tr>
-                </thead>
-                <tbody>
+        <h3><?= TEXT_SITEMAPXML_FILE_LIST ?></h3>
+        <div>
+            <button onclick="javascript: window.location.reload();"><?= TEXT_SITEMAPXML_RELOAD_WINDOW ?></button>
+        </div>
+        <br>
+        <table class="table table-sm table-responsive table-hover">
+            <thead>
+                <tr class="dataTableHeadingRow">
+                    <th class="dataTableHeadingContent"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_FNAME ?></th>
+                    <th class="dataTableHeadingContent text-center"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_FSIZE ?></th>
+                    <th class="dataTableHeadingContent text-center"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_FTIME ?></th>
+                    <th class="dataTableHeadingContent text-center"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_FPERMS ?></th>
+                    <th class="dataTableHeadingContent text-center"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_TYPE ?></th>
+                    <th class="dataTableHeadingContent text-center"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_ITEMS ?></th>
+                    <th class="dataTableHeadingContent text-center"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_COMMENTS ?></th>
+                    <th class="dataTableHeadingContent text-right"><?= TEXT_SITEMAPXML_FILE_LIST_TABLE_ACTION ?></th>
+                </tr>
+            </thead>
+            <tbody>
 <?php
 $indexFile = SITEMAPXML_SITEMAPINDEX . (SITEMAPXML_COMPRESS === 'true' ? '.xml.gz' : '.xml');
 $sitemapFiles = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml');
@@ -308,67 +287,66 @@ foreach ($sitemapFiles as $file) {
         }
     }
 ?>
-                    <tr class="dataTableRow text-center<?php echo $class; ?>">
-                        <td class="dataTableContent text-left">
-                            <a href="<?php echo HTTP_CATALOG_SERVER . DIR_WS_CATALOG . $f['name']; ?>" target="_blank">
-                                <?php echo $f['name']; ?>&nbsp;<?php echo zen_image(DIR_WS_IMAGES . 'icon_popup.gif', TEXT_SITEMAPXML_IMAGE_POPUP_ALT, '10', '10'); ?>
-                            </a>
-                        </td>
-                        <td class="dataTableContent<?php echo $class; ?>"><?php echo $f['size']; ?></td>
-                        <td class="dataTableContent<?php echo $class; ?>"><?php echo $f['time']; ?></td>
-                        <td class="dataTableContent<?php echo $class; ?>"><?php echo $f['perms']; ?></td>
-                        <td class="dataTableContent<?php echo $class; ?>"><?php echo $type; ?></td>
-                        <td class="dataTableContent<?php echo $class; ?>"><?php echo $items; ?></td>
-                        <td class="dataTableContent<?php echo $class; ?>"><?php echo trim($comments); ?></td>
-                        <td class="dataTableContent text-right<?php echo $class; ?>">
+                <tr class="dataTableRow text-center<?= $class ?>">
+                    <td class="dataTableContent text-left">
+                        <a href="<?= HTTP_CATALOG_SERVER . DIR_WS_CATALOG . $f['name'] ?>" target="_blank">
+                            <?= $f['name'] ?>&nbsp;<?= zen_image(DIR_WS_IMAGES . 'icon_popup.gif', TEXT_SITEMAPXML_IMAGE_POPUP_ALT, '10', '10') ?>
+                        </a>
+                    </td>
+                    <td class="dataTableContent<?= $class ?>"><?= $f['size'] ?></td>
+                    <td class="dataTableContent<?= $class ?>"><?= $f['time'] ?></td>
+                    <td class="dataTableContent<?= $class ?>"><?= $f['perms'] ?></td>
+                    <td class="dataTableContent<?= $class ?>"><?= $type ?></td>
+                    <td class="dataTableContent<?= $class ?>"><?= $items ?></td>
+                    <td class="dataTableContent<?= $class ?>"><?= trim($comments) ?></td>
+                    <td class="dataTableContent text-right<?= $class ?>">
 <?php
     if ($f['size'] > 0) {
 ?>
-                            <?php echo zen_draw_form('view_file', FILENAME_SITEMAPXML, '', 'post', 'target="_blank"'); ?>
-                                <?php echo zen_draw_hidden_field('action', 'view_file'); ?>
-                                <?php echo zen_draw_hidden_field('file', $f['name']); ?>
-                                <button type="submit"><?php echo TEXT_ACTION_VIEW_FILE; ?></button>
-                            <?php echo '</form>' . PHP_EOL; ?>
+                        <?= zen_draw_form('view_file', FILENAME_SITEMAPXML, '', 'post', 'target="_blank"') ?>
+                            <?= zen_draw_hidden_field('action', 'view_file') ?>
+                            <?= zen_draw_hidden_field('file', $f['name']) ?>
+                            <button type="submit"><?= TEXT_ACTION_VIEW_FILE ?></button>
+                        <?= '</form>' . PHP_EOL ?>
 
-                            <?php echo zen_draw_form('truncate_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="return confirm(\'' . sprintf(TEXT_ACTION_TRUNCATE_FILE_CONFIRM, $f['name']) . '\');"');?>
-                                <?php echo zen_draw_hidden_field('action', 'truncate_file'); ?>
-                                <?php echo zen_draw_hidden_field('file', $f['name']); ?>
-                                <button type="submit"><?php echo TEXT_ACTION_TRUNCATE_FILE; ?></button>
-                            <?php echo '</form>' . PHP_EOL; ?>
+                        <?= zen_draw_form('truncate_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="return confirm(\'' . sprintf(TEXT_ACTION_TRUNCATE_FILE_CONFIRM, $f['name']) . '\');"') ?>
+                            <?= zen_draw_hidden_field('action', 'truncate_file') ?>
+                            <?= zen_draw_hidden_field('file', $f['name']) ?>
+                            <button type="submit"><?= TEXT_ACTION_TRUNCATE_FILE ?></button>
+                        <?= '</form>' . PHP_EOL ?>
 <?php
     }
 ?>
-                            <?php echo zen_draw_form('delete_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="return confirm(\'' . sprintf(TEXT_ACTION_DELETE_FILE_CONFIRM, $f['name']) . '\');"'); ?>
-                                <?php echo zen_draw_hidden_field('action', 'delete_file'); ?>
-                                <?php echo zen_draw_hidden_field('file', $f['name']); ?>
-                                <button type="submit"><?php echo TEXT_ACTION_DELETE_FILE; ?></button>
-                            <?php echo '</form>' . PHP_EOL;
-?>
-                        </td>
-                    </tr>
+                        <?= zen_draw_form('delete_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="return confirm(\'' . sprintf(TEXT_ACTION_DELETE_FILE_CONFIRM, $f['name']) . '\');"') ?>
+                            <?= zen_draw_hidden_field('action', 'delete_file') ?>
+                            <?= zen_draw_hidden_field('file', $f['name']) ?>
+                            <button type="submit"><?= TEXT_ACTION_DELETE_FILE ?></button>
+                        <?= '</form>' . PHP_EOL ?>
+                    </td>
+                </tr>
 <?php
 }
 ?>
-                </tbody>
-            </table>
+            </tbody>
+        </table>
 
-            <h3><?php echo TEXT_SITEMAPXML_TIPS_HEAD; ?></h3>
-            <div id="overviewTips">
-                <?php echo TEXT_SITEMAPXML_TIPS_TEXT; ?>
-            </div>
-
-            <div class="row">
-                <?php echo zen_draw_form('uninstall', FILENAME_SITEMAPXML, '', 'post'); ?>
-                    <?php echo zen_draw_hidden_field('action', 'uninstall'); ?>
-                    <br><button type="submit"><?php echo TEXT_UNINSTALL; ?></button>
-                <?php echo '</form>' . PHP_EOL; ?>
-            </div>
+        <h3><?= TEXT_SITEMAPXML_TIPS_HEAD ?></h3>
+        <div id="overviewTips">
+            <?= TEXT_SITEMAPXML_TIPS_TEXT ?>
         </div>
 
-        <div class="smallText center">Copyright &copy; 2004-<?php echo date('Y') . ' eCommerce-Service'; ?></div>
-        <!-- footer //-->
-        <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
-        <!-- footer_eof //-->
-    </body>
+        <div class="row">
+            <?= zen_draw_form('uninstall', FILENAME_SITEMAPXML, '', 'post') ?>
+                <?= zen_draw_hidden_field('action', 'uninstall') ?>
+                <br><button type="submit"><?= TEXT_UNINSTALL ?></button>
+            <?= '</form>' . PHP_EOL ?>
+        </div>
+    </div>
+
+    <div class="smallText center">Copyright &copy; 2004-<?= date('Y') . ' eCommerce-Service' ?></div>
+    <!-- footer //-->
+    <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
+    <!-- footer_eof //-->
+</body>
 </html>
 <?php require DIR_WS_INCLUDES . 'application_bottom.php'; ?>
