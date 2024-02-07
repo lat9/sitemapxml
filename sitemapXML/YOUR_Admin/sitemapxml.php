@@ -275,15 +275,30 @@ foreach ($sitemapFiles as $file) {
         $comments .= ' ' . TEXT_SITEMAPXML_FILE_LIST_COMMENTS_IGNORED;
     }
     if ($f['size'] > 0) {
-        $fp = fopen($file, 'r');
+        // -----
+        // PHP functions used to read the file depend on whether it was
+        // gzipped or not.
+        //
+        if (pathinfo($file, PATHINFO_EXTENSION) === 'gz') {
+            $fopen = 'gzopen';
+            $read_only = 'rb9';
+            $fread = 'gzread';
+            $fclose = 'gzclose';
+        } else {
+            $fopen = 'fopen';
+            $read_only = 'r';
+            $fread = 'fread';
+            $fclose = 'fclose';
+        }
+        $fp = $fopen($file, $read_only);
         if ($fp === false) {
             $items = '<span class="text-danger">Error!!!</span>';
         } else {
             $contents = '';
             while (!feof($fp)) {
-                $contents .= fread($fp, 8192);
+                $contents .= $fread($fp, 8192);
             }
-            fclose($fp);
+            $fclose($fp);
             if (strpos($contents, '</urlset>') !== false) {
                 $type = TEXT_SITEMAPXML_FILE_LIST_TYPE_URLSET;
                 $items = substr_count($contents, '</url>');
