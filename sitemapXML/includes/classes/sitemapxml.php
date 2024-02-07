@@ -13,81 +13,71 @@
  * updated for 1.5.8 by TC
  * 
  */
-define('TABLE_SITEMAPXML_TEMP', DB_PREFIX . 'sitemapxml_temp');
-define('SITEMAPXML_MAX_ENTRIES', 5000);
-define('SITEMAPXML_MAX_SIZE', 10000000); // 10 485 760
+zen_define_default('TABLE_SITEMAPXML_TEMP', DB_PREFIX . 'sitemapxml_temp');
+zen_define_default('SITEMAPXML_MAX_ENTRIES', 5000);
+zen_define_default('SITEMAPXML_MAX_SIZE', 10000000); // 10 485 760
 
-define('SITEMAPXML_CHECK_URL', 'false');
+zen_define_default('SITEMAPXML_CHECK_URL', 'false');
 
 class zen_SiteMapXML
 {
-    private
-        $savepath,
-        $savepathIndex,
-        $sitemap,
-        $videomap,
-        $sitemapindex,
-        $compress,
-        $base_url,
-        $magicSeo = false,
-        $submitFlag_url,
-        $duplicatedLinks,
-        $checkDuplicates,
-        $checkurl,
+    private string $savepath;
+    private string $savepathIndex;
+    private string $sitemap;
+    private string $videomap;
+    private string $sitemapindex;
+    private bool $compress;
+    private string $base_url;
+    private bool $magicSeo = false;
+    private array $duplicatedLinks;
+    private string $checkDuplicates;
+    private bool $checkurl;
 
-        $languageSession = [],
-        $languages = [],
-        $languagesIDs,
-        $languagesCount = 0,
-        $default_language_id = 0,
+    private array $languageSession = [];
+    private array $languages = [];
+    private string $languagesIDs;
+    private int $languagesCount = 0;
+    private int $default_language_id = 0;
 
-        $sitemapItems = [],
-        $submitFlag = true,
-        $inline = false,
-        $rebuild = false,
-        $genxml = true,
-        $stylesheet = '',
-        $base_url_index,
-        $submit_url,
+    private array $sitemapItems = [];
+    private bool $submitFlag = true;
+    private bool $inline = false;
+    private bool $rebuild = false;
+    private bool $genxml = true;
+    private string $stylesheet = '';
+    private string $base_url_index;
 
-        $sitemapFileItems = 0,
-        $sitemapFileSize = 0,
-        $sitemapFileItemsTotal = 0,
-        $sitemapFileSizeTotal = 0,
-        $sitemapFileItemsMax,
-        $sitemapFile,
-        $sitemapFileName,
-        $sitemapType,
-        $sitemapFileNameNumber = 0,
-        $sitemapFileFooter = '</urlset>',
-        $sitemapFileHeader,
-        $sitemapFileBuffer = '',
-        $sitemapxml_max_entries,
-        $sitemapxml_max_size,
-        $timezone,
+    private int $sitemapFileItems = 0;
+    private int $sitemapFileSize = 0;
+    private int $sitemapFileItemsTotal = 0;
+    private int $sitemapFileSizeTotal = 0;
+    private int $sitemapFileItemsMax;
+    private $sitemapFile;
+    private string $sitemapFileName;
+    private string $sitemapType;
+    private int $sitemapFileNameNumber = 0;
+    private string $sitemapFileFooter = '</urlset>';
+    private string $sitemapFileBuffer = '';
+    private int $sitemapxml_max_entries;
+    private int $sitemapxml_max_size;
+    private string $timezone;
 
-        $fb_maxsize = 4096,
-        $fb = '',
-        $fp = null,
-        $fn = '',
-        $dir_ws,
+    private int $fb_maxsize = 4096;
+    private string $fb = '';
+    private $fp = null;
+    private string $fn = '';
+    private string $dir_ws;
 
-        $time_ping,
+    private $time_ping;
 
-        $statisticTotalTime = 0,
-        $statisticTotalQueries = 0,
-        $statisticTotalQueriesTime = 0,
-        $statisticModuleTime = 0,
-        $statisticModuleQueries = 0,
-        $statisticModuleQueriesTime = 0;
+    private $statisticModuleTime = 0;
+    private $statisticModuleQueries = 0;
+    private $statisticModuleQueriesTime = 0;
 
-    public function __construct($inline = false, $rebuild = false, $genxml = true)
+    public function __construct(bool $inline = false, bool $rebuild = false, bool $genxml = true)
     {
         global $db;
 
-        $this->statisticTotalTime = microtime(true);
-        $this->statisticTotalQueries = $db->queryCount();
-        $this->statisticTotalQueriesTime = $db->queryTime();
         $this->statisticModuleTime = microtime(true);
         $this->statisticModuleQueries = $db->queryCount();
         $this->statisticModuleQueriesTime = $db->queryTime();
@@ -107,7 +97,6 @@ class zen_SiteMapXML
         $this->savepathIndex = DIR_FS_CATALOG;
         $this->base_url = HTTP_SERVER . DIR_WS_CATALOG . $this->dir_ws;
         $this->base_url_index = HTTP_SERVER . DIR_WS_CATALOG;
-        $this->submit_url = urlencode($this->base_url_index . $this->sitemapindex);
         $this->submitFlag = true;
         $this->inline = $inline;
         $this->rebuild = $rebuild;
@@ -126,8 +115,8 @@ class zen_SiteMapXML
         $this->genxml = $genxml;
         $this->sitemapFileFooter = '</urlset>';
         $this->sitemapFileBuffer = '';
-        $this->sitemapxml_max_entries = SITEMAPXML_MAX_ENTRIES;
-        $this->sitemapxml_max_size = SITEMAPXML_MAX_SIZE - strlen($this->sitemapFileFooter);
+        $this->sitemapxml_max_entries = (int)SITEMAPXML_MAX_ENTRIES;
+        $this->sitemapxml_max_size = ((int)SITEMAPXML_MAX_SIZE) - strlen($this->sitemapFileFooter);
 
         global $lng;
         if (empty($lng) || !is_object($lng)) {
@@ -153,18 +142,15 @@ class zen_SiteMapXML
         if (SITEMAPXML_USE_ONLY_DEFAULT_LANGUAGE === 'true') {
             $languagesIDsArray  = [$this->default_language_id];
         }
-        $this->languagesIDs = implode(',', $languagesIDsArray );
-        $this->languagesCount = count($languagesIDsArray );
+        $this->languagesIDs = implode(',', $languagesIDsArray);
+        $this->languagesCount = count($languagesIDsArray);
 
         $this->sitemapItems = [];
 
         $timezone = date('O');
         $this->timezone = substr($timezone, 0, 3) . ':' . substr($timezone, 3, 2);
 
-        $this->magicSeo = false;
-        if (function_exists('unMagicSeoDoSeo')) {
-          $this->magicSeo = true;
-        }
+        $this->magicSeo = (function_exists('unMagicSeoDoSeo'));
 
         if ($this->inline) {
             ob_start();
@@ -173,7 +159,7 @@ class zen_SiteMapXML
         $this->time_ping = time();
     }
 
-    public function SitemapOpen($file, $last_date = 0, $type = 'sitemap')
+    public function SitemapOpen(string $file, $last_date = 0, string $type = 'sitemap'): bool
     {
         if (strlen($this->sitemapFileBuffer) > 0) {
             $this->SitemapClose();
@@ -184,7 +170,7 @@ class zen_SiteMapXML
         $this->sitemapFile = $file;
         $this->sitemapType = $type;
         $this->sitemapFileName = $this->_getNameFileXML($file);
-        if ($this->_checkFTimeSitemap($this->sitemapFileName, $last_date) == false) {
+        if ($this->_checkFTimeSitemap($this->sitemapFileName, $last_date) === false) {
             return false;
         }
         if ($file === 'index') {
@@ -220,7 +206,7 @@ class zen_SiteMapXML
         return true;
     }
 
-    public function SitemapSetMaxItems($maxItems)
+    public function SitemapSetMaxItems(int $maxItems): bool
     {
         $this->sitemapFileItemsMax = $maxItems;
         return true;
@@ -254,11 +240,11 @@ class zen_SiteMapXML
             $_SESSION['language'] = $this->languageSession['language'];
             $_SESSION['languages_id'] = $this->languageSession['languages_id'];
             $_SESSION['languages_code'] = $this->languageSession['languages_code'];
-            $this->SitemapWriteItem($link, $lastmod, $changefreq, $xtra);
+            $this->SitemapWriteItem($link, (int)$lastmod, $changefreq, $xtra);
         }
     }
 
-    protected function SitemapWriteItem($loc, $lastmod = '', $changefreq = '', $xtra = '')
+    protected function SitemapWriteItem($loc, int $lastmod = 0, $changefreq = '', $xtra = ''): bool
     {
         $time_now = time();
         if ($this->time_ping >= $time_now + 30) {
@@ -290,14 +276,14 @@ class zen_SiteMapXML
         $itemRecord  = '';
         $itemRecord .= ' <url>' . "\n";
         $itemRecord .= '  <loc>' . $loc . '</loc>' . "\n";
-        if ((int)$lastmod > 0) {
+        if ($lastmod > 0) {
             $itemRecord .= '  <lastmod>' . $this->_LastModFormat($lastmod) . '</lastmod>' . "\n";
         }
         if ($changefreq !== '' && $changefreq !== 'no') {
             $itemRecord .= '  <changefreq>' . $changefreq . '</changefreq>' . "\n";
         }
         if ($this->sitemapFileItemsMax > 0) {
-            $itemRecord .= '  <priority>' . number_format(max((($this->sitemapFileItemsMax-$this->sitemapFileItemsTotal)/$this->sitemapFileItemsMax), 0.10), 2, '.', '') . '</priority>' . "\n";
+            $itemRecord .= '  <priority>' . number_format(max((($this->sitemapFileItemsMax - $this->sitemapFileItemsTotal) / $this->sitemapFileItemsMax), 0.10), 2, '.', '') . '</priority>' . "\n";
         }
         if ($xtra !== '') {
             $itemRecord .= $xtra;
@@ -360,7 +346,7 @@ class zen_SiteMapXML
                     if ($filenameBase !== $this->sitemapindex && $this->_checkFContentSitemap($filename)) {
                         $fileURL = $this->base_url . $filenameBase;
                         $fileURL = $this->_url_encode($fileURL);
-                        echo TEXT_INCLUDE_FILE . $this->dir_ws . $filenameBase . ' (<a href="' . $fileURL . '" target="_blank">' . $fileURL . '</a>)' . '<br />';
+                        echo TEXT_INCLUDE_FILE . $this->dir_ws . $filenameBase . ' (<a href="' . $fileURL . '" target="_blank">' . $fileURL . '</a>)' . '<br>';
                         $itemRecord = '';
                         $itemRecord .= ' <sitemap>' . "\n";
                         $itemRecord .= '  <loc>' . $fileURL . '</loc>' . "\n";
@@ -413,12 +399,12 @@ class zen_SiteMapXML
         return zen_get_generated_category_path_rev($cID);
     }
 
-    public function setCheckURL($checkurl)
+    public function setCheckURL(bool $checkurl)
     {
         $this->checkurl = $checkurl;
     }
 
-    public function setStylesheet($stylesheet)
+    public function setStylesheet(string $stylesheet)
     {
         $this->stylesheet = $stylesheet;
     }
@@ -449,24 +435,24 @@ class zen_SiteMapXML
         return $directory;
     }
 
-    public function getLanguagesIDs()
+    public function getLanguagesIDs(): string
     {
         return $this->languagesIDs;
     }
 
     // ZC Sniffer class already offers this feature.
-    public function dbTableExist($table)
+    public function dbTableExist(string $table): bool
     {
         return $GLOBALS['sniffer']->table_exists($table);
     }
 
     // ZC Sniffer class already offers this feature.
-    public function dbColumnExist($table, $column)
+    public function dbColumnExist(string $table, string $column): bool
     {
         return $GLOBALS['sniffer']->field_exists($table, $column);
     }
 
-    public function imagesTags($images, $caption = 'true', $license_url = '')
+    public function imagesTags($images, string $caption = 'true', string $license_url = '')
     {
         $tags = '';
         if (!is_array($images)) {
@@ -484,7 +470,7 @@ class zen_SiteMapXML
                 $tags .= '    <image:title>' . $image['title'] . '</image:title>' . "\n";
             }
             if ($license_url !== '') {
-                if (substr($license_url, 0, 7) != 'http://' && substr($license_url, 0, 8) != 'https://') {
+                if (strpos($license_url, 'http://') !== 0 && strpos($license_url, 'https://') !== 0) {
                     $license_url = HTTP_SERVER . DIR_WS_CATALOG . $license_url;
                 }
                 $tags .= '    <image:license>' . $this->_url_encode($license_url) . '</image:license>' . "\n";
@@ -496,10 +482,10 @@ class zen_SiteMapXML
 
 /////////////////////////
 
-    public function _checkFTimeSitemap($filename, $last_date = 0)
+    protected function _checkFTimeSitemap(string $filename, $last_date = 0): bool
     {
 // TODO: Multifiles
-        if ($this->rebuild == true || $last_date === 0) {
+        if ($this->rebuild === true || empty($last_date)) {
             return true;
         }
 
@@ -508,16 +494,14 @@ class zen_SiteMapXML
             && file_exists($this->savepath . $filename)
             && (filemtime($this->savepath . $filename) >= strtotime($last_date))
             && $this->_checkFContentSitemap($this->savepath . $filename)) {
-            echo '"' . $filename . '" ' . TEXT_FILE_NOT_CHANGED . '<br />';
+            echo '"' . $filename . '" ' . TEXT_FILE_NOT_CHANGED . '<br>';
             return false;
         }
         return true;
     }
 
-    public function _checkFContentSitemap($filename)
+    protected function _checkFContentSitemap(string $filename): bool
     {
-//    if (($fsize = $this->_fileSize($this->savepath . $filename)) > 0) {
-//    echo '<pre>';var_dump($filename);echo '</pre>';
         if (($fsize = $this->_fileSize($filename)) > 0) {
             if ($fp = fopen($filename, 'r')) {
                 fseek($fp, $fsize - 128, SEEK_SET);
@@ -531,7 +515,7 @@ class zen_SiteMapXML
         return false;
     }
 
-    public function _getNameFileXML($filename)
+    protected function _getNameFileXML(string $filename): string
     {
         switch ($this->sitemapType) {
             case 'index':
@@ -549,7 +533,7 @@ class zen_SiteMapXML
     }
 
     // format the LastMod field
-    public function _LastModFormat($date)
+    protected function _LastModFormat(int $date): string
     {
         if (SITEMAPXML_LASTMOD_FORMAT === 'full') {
             return gmdate('Y-m-d\TH:i:s', $date) . $this->timezone;
@@ -558,11 +542,9 @@ class zen_SiteMapXML
         }
     }
 
-    public function _SitemapXMLHeader()
+    protected function _SitemapXMLHeader(): string
     {
-        $header = '';
-        $header .= '<?xml version="1.0" encoding="UTF-8"?'.'>' . "\n";
-//    $header .= ($this->stylesheet != '' ? '<?xml-stylesheet type="text/xsl" href="' . HTTP_SERVER . DIR_WS_CATALOG . $this->stylesheet . '"?'.'>' . "\n" : "");
+        $header = '<?xml version="1.0" encoding="UTF-8"?'.'>' . "\n";
         $header .= ($this->stylesheet != '' ? '<?xml-stylesheet type="text/xsl" href="' . DIR_WS_CATALOG . $this->stylesheet . '"?'.'>' . "\n" : "");
         switch ($this->sitemapType) {
             case 'index':
@@ -587,7 +569,7 @@ class zen_SiteMapXML
         return $header;
     }
 
-    public function _clearHTML($html)
+    protected function _clearHTML(string $html): string
     {
         $html = str_replace('&nbsp;', ' ', $html);
         $html = preg_replace('@\s\s+@', ' ', $html);
@@ -598,11 +580,11 @@ class zen_SiteMapXML
         $html = preg_replace("@\n\s+@", "\n", $html);
         $html = strip_tags($html);
         $html = trim($html);
-        $html = nl2br($html);
+        $html = nl2br($html, false);
         return $html;
     }
 
-    public function _outputSitemapIndex()
+    protected function _outputSitemapIndex()
     {
         header('Last-Modified: ' . gmdate('r') . ' GMT');
         header('Content-Type: text/xml; charset=UTF-8');
@@ -610,14 +592,14 @@ class zen_SiteMapXML
         echo file_get_contents($this->savepathIndex . $this->sitemapindex);
     }
 
-    public function _curlExecute($url, $read = 'page')
+    protected function _curlExecute(string $url, string $read = 'page')
     {
         if (!function_exists('curl_init')) {
             echo TEXT_ERROR_CURL_NOT_FOUND . '<br>';
             return false;
         }
         if (!$ch = curl_init()) {
-            echo TEXT_ERROR_CURL_INIT . '<br />';
+            echo TEXT_ERROR_CURL_INIT . '<br>';
             return false;
         }
         $url = str_replace('&amp;', '&', $url);
@@ -649,21 +631,15 @@ class zen_SiteMapXML
             curl_close($ch);
             if (empty($info['http_code'])) {
                 echo sprintf(TEXT_ERROR_CURL_NO_HTTPCODE, $url) . '<br>';
-    //        return false;
             } elseif ($info['http_code'] != 200) {
-    //        $http_codes = @parse_ini_file('includes/http_responce_code.ini');
-    //        echo "cURL Error: Error http_code '<b>" . $info['http_code'] . " " . $http_codes[$info['http_code']] . "</b>' reading '" . $url . "'. " . '<br />';
                 echo sprintf(TEXT_ERROR_CURL_ERR_HTTPCODE, $info['http_code'], $url) . '<br>';
-    //        return false;
             }
             if ($read === 'page') {
                 if ($info['size_download'] == 0) {
                     echo sprintf(TEXT_ERROR_CURL_0_DOWNLOAD, $url) . '<br>';
-    //          return false;
                 }
                 if (isset($info['download_content_length']) && $info['download_content_length'] > 0 && $info['download_content_length'] != $info['size_download']) {
                     echo sprintf(TEXT_ERROR_CURL_ERR_DOWNLOAD, $url, $info['size_download'], $info['download_content_length']) . '<br>';
-    //          return false;
             }
             $info['html_page'] = $result;
           }
@@ -672,7 +648,7 @@ class zen_SiteMapXML
     }
 
 ///////////////////////
-    public function _SitemapReSet()
+    protected function _SitemapReSet(): bool
     {
         $this->_SitemapReSetFile();
         $this->statisticModuleReset();
@@ -684,11 +660,8 @@ class zen_SiteMapXML
         return true;
     }
 
-    public function _SitemapReSetFile()
+    protected function _SitemapReSetFile(): bool
     {
-//    $this->sitemapFile = null;
-//    $this->sitemapType = null;
-//    $this->sitemapFileName = null;
         $this->sitemapFileBuffer = '';
         $this->sitemapFileItems = 0;
         $this->sitemapFileSize = 0;
@@ -696,7 +669,7 @@ class zen_SiteMapXML
         return true;
     }
 
-    public function _SitemapCloseFile()
+    protected function _SitemapCloseFile()
     {
         if (!$this->_fileIsOpen()) {
             return;
@@ -707,7 +680,13 @@ class zen_SiteMapXML
             $this->_fileWrite($this->sitemapFileBuffer);
         }
         $this->_fileClose();
-        echo sprintf(TEXT_FILE_SITEMAP_INFO, $this->base_url . $this->sitemapFileName, $this->base_url . $this->sitemapFileName, $this->sitemapFileItems, $this->sitemapFileSize, $this->_fileSize($this->savepath . $this->sitemapFileName)) . '<br>';
+        echo sprintf(TEXT_FILE_SITEMAP_INFO,
+            $this->base_url . $this->sitemapFileName,
+            $this->base_url . $this->sitemapFileName,
+            $this->sitemapFileItems,
+            $this->sitemapFileSize,
+            $this->_fileSize($this->savepath . $this->sitemapFileName)
+        ) . '<br>';
     }
 
     public function statisticModuleReset()
@@ -719,7 +698,7 @@ class zen_SiteMapXML
         $this->statisticModuleQueriesTime = $db->queryTime();
     }
 
-    public function _checkDuplicateLoc($loc)
+    protected function _checkDuplicateLoc($loc)
     {
         global $db;
         if ($this->checkDuplicates === 'true') {
@@ -746,7 +725,7 @@ class zen_SiteMapXML
     }
 
 ///////////////////////
-    public function _fileOpen($filename, $path = '')
+    protected function _fileOpen(string $filename, string $path = '')
     {
         if ($path === '') {
             $path = $this->savepath;
@@ -762,26 +741,22 @@ class zen_SiteMapXML
             $this->fp = fopen($path . $filename, 'w+');
         }
         if (!$this->fp) {
-    //      echo '<span style="font-weight:bold;color:red;">' . sprintf(TEXT_FAILED_TO_OPEN, $filename) . '</span>' . '<br />';
             if (!is_file($path . $filename)) {
-                echo '<span style="font-weight:bold;color:red;">' . sprintf(TEXT_FAILED_TO_CREATE, $path . $filename) . '</span>' . '<br />';
+                echo '<span style="font-weight:bold;color:red;">' . sprintf(TEXT_FAILED_TO_CREATE, $path . $filename) . '</span>' . '<br>';
             } else {
-                echo '<span style="font-weight:bold;color:red;">' . sprintf(TEXT_FAILED_TO_CHMOD, $path . $filename) . '</span>' . '<br />';
+                echo '<span style="font-weight:bold;color:red;">' . sprintf(TEXT_FAILED_TO_CHMOD, $path . $filename) . '</span>' . '<br>';
             }
             $this->submitFlag = false;
         }
         return $this->fp;
     }
 
-    public function _fileIsOpen()
+    protected function _fileIsOpen(): bool
     {
-        if (!isset($this->fp) || $this->fp == false) {
-            return false;
-        }
-        return true;
+        return (isset($this->fp) && $this->fp !== false);
     }
 
-    public function _fileWrite($data = '')
+    protected function _fileWrite(string $data = '')
     {
         $ret = true;
         if (strlen($this->fb) > $this->fb_maxsize || ($data === '' && strlen($this->fb) > 0)) {
@@ -796,7 +771,7 @@ class zen_SiteMapXML
         return $ret;
     }
 
-    public function _fileClose()
+    protected function _fileClose()
     {
         if (!isset($this->fp) || $this->fp == false) {
             return;
@@ -812,9 +787,8 @@ class zen_SiteMapXML
         unset($this->fp);
     }
 
-    public function _fileSize($fn)
+    protected function _fileSize(string $fn): int
     {
-//    clearstatcache(true, $fn);
         clearstatcache();
         $fs = filesize($fn);
         return $fs;
@@ -827,11 +801,11 @@ class zen_SiteMapXML
         return $m . ':' . number_format($s, 4);
     }
 
-    public function _url_encode($loc)
+    protected function _url_encode($loc)
     {
         $parsed_url = parse_url($loc);
         $scheme = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
-        $host = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+        $host = $parsed_url['host'] ?? '';
         $port = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
         $user = isset($parsed_url['user']) ? rawurlencode($parsed_url['user']) : '';
         $pass = isset($parsed_url['pass']) ? ':' . rawurlencode($parsed_url['pass']) : '';
