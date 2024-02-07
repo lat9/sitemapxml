@@ -11,9 +11,7 @@
  * @version $Id: sitemapxml.php, v 3.2.2 07.05.2012 19:12 AndrewBerezin $
  */
 if (!defined('IS_ADMIN_FLAG')) {
-  die('Illegal Access');
+    die('Illegal Access');
 }
 
 define('FILENAME_SITEMAPXML', 'sitemapxml');
-
-// EOF

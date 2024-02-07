@@ -10,8 +10,5 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.2.2 07.05.2012 19:12 AndrewBerezin $
  */
-
 define('BOX_SITEMAPXML', 'Sitemap XML');
 define('BOX_CONFIGURATION_SITEMAPXML', 'Sitemap XML');
-
-// EOF
