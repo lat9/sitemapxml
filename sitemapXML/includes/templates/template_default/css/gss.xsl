@@ -25,7 +25,7 @@
 <html>
 <head>
 <title>Sitemap XML File</title>
-<style type="text/css">
+<style>
 <![CDATA[
 h1 {
   font-weight:bold;
@@ -69,7 +69,7 @@ p.sml {
 }
 ]]>
 </style>
-<script type="text/javascript">
+<script>
 <![CDATA[
 var selectedColor = "blue";
 var defaultColor = "black";
@@ -259,16 +259,13 @@ function compRows(a, b){
 
         <!-- Copyright notice &#x0020; means significant space character -->
 <div id="copyright">
-                <a href="http://www.sitemaps.org/" target="_blank">Sitemaps.org - information about XML-based sitemaps</a> -
-                <a href="http://googlewebmastercentral.blogspot.com/search/label/sitemaps" target="_blank">Google Blog</a> -
-                <a href="http://www.google.com/support/webmasters/bin/topic.py?topic=8476" target="_blank">Information about xml sitemaps published by Google webmaster central</a>
+                <a href="https://www.sitemaps.org/" target="_blank">Sitemaps.org - information about XML-based sitemaps</a>
 <br />
-                SitemapXML for zen-cart: © 2005-2012 <a href="http://eCommerce-Service.com" target="_blank">Andrew Berezin</a> -
-                <a href="http://www.zen-cart.com/downloads.php?do=file&amp;id=367" target="_blank">Download</a> -
-                <a href="http://www.zen-cart.com/showthread.php?126810-SitemapXML-v-2" target="_blank">Support thread</a>
+                SitemapXML for zen-cart: © 2005-2012 <a href="https://www.zen-cart.com/member.php?4116-a_berezin" target="_blank">Andrew Berezin</a> -
+                <a href="https://www.zen-cart.com/downloads.php?do=file&amp;id=367" target="_blank">Download</a> -
+                <a href="https://www.zen-cart.com/showthread.php?126810-SitemapXML-v-2" target="_blank">Support thread</a>
 <br />
-                Google Sitemaps Stylesheets v1.5a: © 2005 <a href="http://www.baccoubonneville.com" target="_blank">Baccou Bonneville</a> -
-                <a href="http://sourceforge.net/projects/gstoolbox" target="_blank">Project</a>
+                Google Sitemaps Stylesheets v1.5a: © 2005 <a href="https://sourceforge.net/projects/gstoolbox" target="_blank">Project</a>
 </div>
       </body>
     </html>
