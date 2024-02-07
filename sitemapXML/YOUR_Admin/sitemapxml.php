@@ -150,7 +150,7 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS ?></h3>
+                        <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD ?></h3>
                     </div>
                     <div class="panel-body">
                         <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>

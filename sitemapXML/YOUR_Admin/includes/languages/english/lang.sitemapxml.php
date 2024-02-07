@@ -17,7 +17,6 @@ $define = [
     'TEXT_SITEMAPXML_TIPS_HEAD' => 'Tips',
     'TEXT_SITEMAPXML_TIPS_TEXT' => '<p>To learn more about how to manage the sitemaps of this software, please <a href="' . zen_href_link($current_page, zen_get_all_get_params()) . '">reload</a> this page.</p>',
     'TEXT_SITEMAPXML_INSTRUCTIONS_HEAD' => 'Create / update your site map(s)',
-    'TEXT_SITEMAPXML_CHOOSE_PARAMETERS' => 'Select Actions',
     'TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD' => 'Rebuild all sitemap*.xml files!',
 
     'TEXT_SITEMAPXML_PLUGINS_LIST' => 'Sitemap Plugins',
