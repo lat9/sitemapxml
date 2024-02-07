@@ -100,46 +100,10 @@ label {
     padding: 1em;
 }
     </style>
-    <script>
-function getFormFields(obj)
-{
-    var getParms = '';
-    for (var i=0; i<obj.childNodes.length; i++) {
-        if (obj.childNodes[i].name === 'securityToken') {
-            continue;
-        }
-        if (obj.childNodes[i].tagName == 'INPUT') {
-            if (obj.childNodes[i].type === 'text') {
-                getParms += "&" + obj.childNodes[i].name + '=' + obj.childNodes[i].value;
-            }
-            if (obj.childNodes[i].type === 'hidden') {
-                getParms += "&" + obj.childNodes[i].name + '=' + obj.childNodes[i].value;
-            }
-            if (obj.childNodes[i].type === 'checkbox') {
-                if (obj.childNodes[i].checked) {
-                    getParms += '&' + obj.childNodes[i].name + '=' + obj.childNodes[i].value;
-                }
-            }
-            if (obj.childNodes[i].type === 'radio') {
-                if (obj.childNodes[i].checked) {
-                    getParms += '&' + obj.childNodes[i].name + '=' + obj.childNodes[i].value;
-                }
-            }
-        }
-        if (obj.childNodes[i].tagName == 'SELECT') {
-            var sel = obj.childNodes[i];
-            getParms += '&' + sel.name + '=' + sel.options[sel.selectedIndex].value;
-        }
-    }
-    getParms = getParms.replace(/\s+/g, ' ');
-    getParms = getParms.replace(/ /g, '+');
-    return getParms;
-}
-    </script>
 </head>
 <body>
 <?php
-$start_parms = (SITEMAPXML_EXECUTION_TOKEN === '') ? '' : ('token=' . SITEMAPXML_EXECUTION_TOKEN);
+$start_parms = 'rebuild=yes' . ((SITEMAPXML_EXECUTION_TOKEN === '') ? '' : ('&token=' . SITEMAPXML_EXECUTION_TOKEN));
 $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
 ?>
     <?php require DIR_WS_INCLUDES . 'header.php'; ?>
@@ -153,7 +117,7 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
                         <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD ?></h3>
                     </div>
                     <div class="panel-body">
-                        <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\'+getFormFields(this), \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>
+                        <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\', \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>
                             <button type="submit"><?= IMAGE_SEND ?></button>
                         <?= '</form>' . PHP_EOL ?>
                     </div>
@@ -329,10 +293,17 @@ foreach ($sitemapFiles as $file) {
 ?>
             </tbody>
         </table>
-
+<?php
+$sitemap_get_var = '';
+$sitemap_parameter = '';
+if (SITEMAPXML_EXECUTION_TOKEN !== '') {
+    $sitemap_get_var = '&amp;token=' . SITEMAPXML_EXECUTION_TOKEN;
+    $sitemap_parameter = ' token=' . SITEMAPXML_EXECUTION_TOKEN;
+}
+?>
         <h3><?= TEXT_SITEMAPXML_TIPS_HEAD ?></h3>
         <div id="overviewTips">
-            <?= TEXT_SITEMAPXML_TIPS_TEXT ?>
+            <?= sprintf(TEXT_SITEMAPXML_TIPS_TEXT, $sitemap_get_var, $sitemap_parameter) ?>
         </div>
     </div>
 

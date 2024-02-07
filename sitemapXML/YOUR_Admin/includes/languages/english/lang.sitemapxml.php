@@ -67,9 +67,9 @@ if (defined('SITEMAPXML_SITEMAPINDEX')) {
         </ol>
         <p>To <em>automatically</em> update sitemaps, you will need to set up a Cron job via your host\'s control panel.</p>
         <p>To run the generation as a cron job (at 5am for example), you will need to create something similar to the following examples.</p>
-        <samp>0 5 * * * GET \'https://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\'</samp><br>
-        <samp>0 5 * * * wget -q \'https://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\' -O /dev/null</samp><br>
-        <samp>0 5 * * * curl -s \'https://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\'</samp><br>
-        <samp>0 5 * * * php -f &lt;path to shop&gt;/cgi-bin/sitemapxml.php rebuild=yes</samp><br>';
+        <samp>0 5 * * * GET \'https://your_domain/index.php?main_page=sitemapxml&amp;rebuild=yes%1$s\'</samp><br>
+        <samp>0 5 * * * wget -q \'https://your_domain/index.php?main_page=sitemapxml&amp;rebuild=yes%1$s\' -O /dev/null</samp><br>
+        <samp>0 5 * * * curl -s \'https://your_domain/index.php?main_page=sitemapxml&amp;rebuild=yes%1$s\'</samp><br>
+        <samp>0 5 * * * php -f &lt;path to shop&gt;/cgi-bin/sitemapxml.php rebuild=yes%2$s</samp><br>';
 }
 return $define;
