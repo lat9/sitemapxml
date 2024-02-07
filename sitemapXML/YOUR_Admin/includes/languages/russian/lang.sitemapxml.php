@@ -22,6 +22,11 @@ $define = [
     'ERROR_SITEMAPXML_TOKEN_INVALID_HDR' => 'Sitemaps cannot be created',
     'ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE' => 'The execution-token (%1$s) you supplied contains invalid characters.',
 
+    'TEXT_SITEMAPXML_ROBOTS_HDR' => 'Your Site\'s <code>robots.txt</code> File',
+    'SUCCESS_SITEMAPXML_ROBOTS_TXT_OK' => 'Your site\'s <code>robots.txt</code> is pointing search engines to your <code>%1$s</code> Sitemap XML!',
+    'WARNING_SITEMAPXML_NO_ROBOTS_FILE' => 'Your site is missing its <code>robots.txt</code> file! Search engines will not be able to find your sitemap.',
+    'WARNING_SITEMAPXML_NO_ROBOTS_TEXT' => 'Your site\'s <code>robots.txt</code> file does not point search engines to your Sitemap XML file. Consider adding <code>Sitemap: %1$s</code> to your robots.txt file.',
+
     'TEXT_SITEMAPXML_PLUGINS_LIST' => 'Плагины',
     'TEXT_SITEMAPXML_PLUGINS_LIST_SELECT' => 'Отметьте активные плагины',
 

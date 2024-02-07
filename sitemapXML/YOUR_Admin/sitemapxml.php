@@ -112,35 +112,63 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
         <div class="row">
             <h2><? TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
             <div class="col-md-6">
+                <div class="col-md-12">
 
 <?php
 $token_value_ok = (SITEMAPXML_EXECUTION_TOKEN !== '' && preg_match('/[^\/0-9a-zA-Z_.-]/', SITEMAPXML_EXECUTION_TOKEN) !== 1);
 if ($token_value_ok === false) {
 ?>
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3><?= ERROR_SITEMAPXML_TOKEN_INVALID_HDR ?></h3>
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            <h3><?= ERROR_SITEMAPXML_TOKEN_INVALID_HDR ?></h3>
+                        </div>
+                        <div class="panel-body">
+                            <p><?= sprintf(ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE, SITEMAPXML_EXECUTION_TOKEN) ?></p>
+                        </div>
                     </div>
-                    <div class="panel-body">
-                        <p><?= sprintf(ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE, SITEMAPXML_EXECUTION_TOKEN) ?></p>
-                    </div>
-                </div>
 <?php
 } else {
 ?>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD ?></h3>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD ?></h3>
+                        </div>
+                        <div class="panel-body">
+                            <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\', \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>
+                                <button type="submit"><?= IMAGE_SEND ?></button>
+                            <?= '</form>' . PHP_EOL ?>
+                        </div>
                     </div>
-                    <div class="panel-body">
-                        <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\', \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>
-                            <button type="submit"><?= IMAGE_SEND ?></button>
-                        <?= '</form>' . PHP_EOL ?>
-                    </div>
-                </div>
 <?php
 }
 ?>
+                </div>
+<?php
+if (!file_exists(DIR_FS_CATALOG . 'robots.txt')) {
+    $robots_panel_class = 'danger';
+    $robots_message = WARNING_SITEMAPXML_NO_ROBOTS_FILE;
+} else {
+    $robots_txt_data = file_get_contents(DIR_FS_CATALOG . 'robots.txt');
+    if (strpos($robots_txt_data, 'Sitemap: ' . SITEMAPXML_SITEMAPINDEX_HTTP_LINK) === false) {
+        $robots_panel_class = 'danger';
+        $robots_message = sprintf(WARNING_SITEMAPXML_NO_ROBOTS_TEXT, SITEMAPXML_SITEMAPINDEX_HTTP_LINK);
+    } else {
+        $robots_panel_class = 'success';
+        $robots_message = sprintf(SUCCESS_SITEMAPXML_ROBOTS_TXT_OK, SITEMAPXML_SITEMAPINDEX_HTTP_LINK);
+    }
+    unset($robots_txt_data);
+}
+?>
+                <div class="col-md-12">
+                    <div class="panel panel-<?= $robots_panel_class ?>">
+                        <div class="panel-heading">
+                            <h3><?= TEXT_SITEMAPXML_ROBOTS_HDR ?></h3>
+                        </div>
+                        <div class="panel-body">
+                            <p><?= $robots_message ?></p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="panel panel-default">
