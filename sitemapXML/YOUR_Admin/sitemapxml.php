@@ -334,13 +334,6 @@ foreach ($sitemapFiles as $file) {
         <div id="overviewTips">
             <?= TEXT_SITEMAPXML_TIPS_TEXT ?>
         </div>
-
-        <div class="row">
-            <?= zen_draw_form('uninstall', FILENAME_SITEMAPXML, '', 'post') ?>
-                <?= zen_draw_hidden_field('action', 'uninstall') ?>
-                <br><button type="submit"><?= TEXT_UNINSTALL ?></button>
-            <?= '</form>' . PHP_EOL ?>
-        </div>
     </div>
 
     <div class="smallText center">Copyright &copy; 2004-<?= date('Y') . ' eCommerce-Service' ?></div>
