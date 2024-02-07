@@ -24,10 +24,10 @@ if (defined('SITEMAPXML_SITEMAPINDEX')) {
         </ol>
         <p>Чтобы автоматически обновлять sitemaps и автоматически оповещать (пинговать) поисковые системы, необходимо создать cron-задания в Вашей управляющей панели Вашего хостинга.</p>
         <p>Например, для запуска задания ежедневно в 5:0 утра, задайте следующие параметры задания cron (конкретные команды могут отличаться в зависимости от хостинга):</p>
-        <samp>0 5 * * * GET \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\'</samp><br>
-        <samp>0 5 * * * wget -q \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\' -O /dev/null</samp><br>
-        <samp>0 5 * * * curl -s \'http://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\&amp;ping=yes\'</samp><br>
-        <samp>0 5 * * * php -f &lt;path to shop&gt;/cgi-bin/sitemapxml.php rebuild=yes ping=yes</samp><br>');
+        <samp>0 5 * * * GET \'https://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\'</samp><br>
+        <samp>0 5 * * * wget -q \'https://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\' -O /dev/null</samp><br>
+        <samp>0 5 * * * curl -s \'https://your_domain/index.php?main_page=sitemapxml\&amp;rebuild=yes\'</samp><br>
+        <samp>0 5 * * * php -f &lt;path to shop&gt;/cgi-bin/sitemapxml.php rebuild=yes</samp><br>');
 }
 define('HEADING_TITLE', 'Sitemap XML');
 define('TEXT_SITEMAPXML_TIPS_HEAD', 'Советы:');
@@ -36,7 +36,6 @@ if (!defined('TEXT_SITEMAPXML_TIPS_TEXT')) {
 }
 define('TEXT_SITEMAPXML_INSTRUCTIONS_HEAD', 'Создать / обновить Ваши Sitemap:');
 define('TEXT_SITEMAPXML_CHOOSE_PARAMETERS', 'Выберите параметры:');
-define('TEXT_SITEMAPXML_CHOOSE_PARAMETERS_PING', 'Пинговать поисковые системы ');
 define('TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD', 'Перезаписать все существующие файлы sitemap*.xml!');
 
 define('TEXT_SITEMAPXML_PLUGINS_LIST', 'Плагины');
@@ -72,6 +71,3 @@ define('TEXT_MESSAGE_FILE_ERROR_OPENED', 'Ошибка при открытии �
 define('TEXT_MESSAGE_FILE_TRUNCATED', 'Файл %s очищен');
 define('TEXT_MESSAGE_FILE_DELETED', 'Файл %s удалён');
 define('TEXT_MESSAGE_FILE_ERROR_DELETED', 'Ошибка при удалении файла %s');
-
-///////////
-define('TEXT_UNINSTALL', 'Удалить SitemapXML SQL');
