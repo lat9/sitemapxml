@@ -9,15 +9,9 @@
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: sitemapxml_products.php, v 3.2.7 16.03.2016 5:02:08 AndrewBerezin $
  */
-if (!defined('SITEMAPXML_PRODUCTS_IMAGES_SIZE')) {
-    define('SITEMAPXML_PRODUCTS_IMAGES_SIZE', 'large');
-}
-if (!defined('SITEMAPXML_PRODUCTS_IMAGES_ADDITIONAL')) {
-    define('SITEMAPXML_PRODUCTS_IMAGES_ADDITIONAL', 'false'); // true false
-}
-if (!defined('SITEMAPXML_PRODUCTS_IMAGES_FUNCTION')) {
-    define('SITEMAPXML_PRODUCTS_IMAGES_FUNCTION', 'false'); // true false
-}
+zen_define_default('SITEMAPXML_PRODUCTS_IMAGES_SIZE', 'large');
+zen_define_default('SITEMAPXML_PRODUCTS_IMAGES_ADDITIONAL', 'false'); // true false
+zen_define_default('SITEMAPXML_PRODUCTS_IMAGES_FUNCTION', 'false'); // true false
 
 echo '<h3>' . TEXT_HEAD_PRODUCTS . '</h3>';
 
@@ -32,7 +26,7 @@ foreach ($zp_handler as $next_handler) {
 unset($zp_handler);
 
 // BOF hideCategories
-if ($sitemapXML->dbTableExist('TABLE_HIDE_CATEGORIES')) {
+if ($sitemapXML->dbTableExist('TABLE_HIDE_CATEGORIES') === true) {
     $from = " INNER JOIN " . TABLE_HIDE_CATEGORIES . " h ON p.master_categories_id = h.categories_id";
     $where = ' AND (h.visibility_status < 2 OR h.visibility_status IS NULL)';
 } else {
@@ -67,7 +61,7 @@ if ($sitemapXML->SitemapOpen('products', $last_date)) {
                    AND pd.language_id IN (" . $sitemapXML->getLanguagesIDs() . ") " .
                 $from . "
           WHERE p.products_status = 1" . $where .
-          (SITEMAPXML_PRODUCTS_ORDERBY != '' ? ' ORDER BY ' . SITEMAPXML_PRODUCTS_ORDERBY : '')
+          (SITEMAPXML_PRODUCTS_ORDERBY !== '' ? ' ORDER BY ' . SITEMAPXML_PRODUCTS_ORDERBY : '')
     );
     $sitemapXML->SitemapSetMaxItems($products->RecordCount());
     foreach ($products as $next_product) {

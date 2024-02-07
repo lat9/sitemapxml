@@ -17,17 +17,17 @@ if (SITEMAPXML_EZPAGES_ORDERBY !== '') {
     $order_by = SITEMAPXML_EZPAGES_ORDERBY;
 }
 
-if ($sitemapXML->dbColumnExist(TABLE_EZPAGES, 'status_meta_robots')) {
+if ($sitemapXML->dbColumnExist(TABLE_EZPAGES, 'status_meta_robots') === true) {
     $where .= " AND status_meta_robots = 1";
 } elseif ($sitemapXML->dbColumnExist(TABLE_EZPAGES, 'status_rel_nofollow')) {
     $where .= " AND status_rel_nofollow != 1";
 }
 
-if ($sitemapXML->dbTableExist('TABLE_EZPAGES_TEXT')) {
+if ($sitemapXML->dbTableExist('TABLE_EZPAGES_TEXT') === true) {
     $from .= " INNER JOIN " . TABLE_EZPAGES_TEXT . " pt ON p.pages_id = pt.pages_id";
-    if ($sitemapXML->dbColumnExist(TABLE_EZPAGES_TEXT, 'language_id')) {
+    if ($sitemapXML->dbColumnExist(TABLE_EZPAGES_TEXT, 'language_id') === true) {
         $where .= " AND pt.language_id IN (" . $sitemapXML->getLanguagesIDs() . ") ";
-    } elseif ($sitemapXML->dbColumnExist(TABLE_EZPAGES_TEXT, 'languages_id')) {
+    } elseif ($sitemapXML->dbColumnExist(TABLE_EZPAGES_TEXT, 'languages_id') === true) {
         $select .= ', pt.languages_id as language_id';
         $where .= " AND pt.languages_id IN (" . $sitemapXML->getLanguagesIDs() . ") ";
     }

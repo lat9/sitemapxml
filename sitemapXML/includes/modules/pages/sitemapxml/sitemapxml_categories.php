@@ -17,7 +17,7 @@
 echo '<h3>' . TEXT_HEAD_CATEGORIES . '</h3>';
 
 // BOF hideCategories
-if ($sitemapXML->dbTableExist('TABLE_HIDE_CATEGORIES')) {
+if ($sitemapXML->dbTableExist('TABLE_HIDE_CATEGORIES') === true) {
     $from = " INNER JOIN " . TABLE_HIDE_CATEGORIES . " h ON c.categories_id = h.categories_id";
     $where = " AND (h.visibility_status < 2 OR h.visibility_status IS NULL)";
 } else {

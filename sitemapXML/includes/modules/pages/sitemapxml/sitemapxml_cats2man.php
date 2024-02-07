@@ -12,15 +12,13 @@
  */
 echo '<h3>' . TEXT_HEAD_CATS2MAN . '</h3>';
 
-// BOF hideCategories
-if ($sitemapXML->dbTableExist('TABLE_HIDE_CATEGORIES')) {
+if ($sitemapXML->dbTableExist('TABLE_HIDE_CATEGORIES') === true) {
     $from = " INNER JOIN " . TABLE_HIDE_CATEGORIES . " h ON c.categories_id = h.categories_id";
     $where = ' AND (h.visibility_status < 2 OR h.visibility_status IS NULL)';
 } else {
     $from = '';
     $where = '';
 }
-// EOF hideCategories
 
 $last_date = $db->Execute(
     "SELECT MAX(GREATEST(IFNULL(c.date_added, '0001-01-01 00:00:00'), IFNULL(c.last_modified, '0001-01-01 00:00:00'))) AS last_date
