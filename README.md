@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v3.9.9 21.May.2023
+#### v4.0.0 08.Feb.2024
 
 ### Authors
 
@@ -22,7 +22,7 @@ It can be downloaded from the Zen Cart Plugins repository here: https://www.zen-
 
 Zen-Cart Versions Supported
 --------------
-1.5.7[a-d], 1.5.8[a]
+1.5.8[a], 2.0.0
 
 Support thread
 --------------
@@ -44,16 +44,15 @@ Installation of this contribution is done at your own risk.  Backup your Zen Car
 
 Features:
 --------------
-* supports Search-Engine Safe URLs (including MagicSeo)
-* could be accessed by http or command line
-* autogenerates multiple sitemaps for sites with over 50.000 URLs
-* autogenerates multiple sitemaps if filesize exceeded 10MB
-* writes files compressed or uncompressed (You can use the gzip feature or compress your Sitemap files using gzip)
-* using index.php wrapper - https://domain.com/index.php?main_page=sitemapxml
-* using languages file and etc.
-* auto-notify Google and other SE.
-* generation of a sitemap index file
-* generation of xml-sitemaps for (separate files):
+* Supports Search-Engine Safe URLs (including MagicSeo)
+* Accessible either via browser or command line
+* Autogenerates multiple sitemaps for sites with over 50.000 URLs
+* Autogenerates multiple sitemaps if filesize exceeded 10MB
+* Writes files compressed or uncompressed (You can use the gzip feature or compress your Sitemap files using gzip)
+* Using index.php wrapper - https://domain.com/index.php?main_page=sitemapxml
+* Using languages file and etc.
+* Generation of a sitemap index file
+* Generation of xml-sitemaps for (separate files):
   1. Products with images (supports multilangual products, support hideCategories)
   2. Categories with images (supports multilangual categories, support hideCategories)
   3. Manufacturers with images
@@ -83,46 +82,55 @@ Priority is calculated on the basis of the positions in the selection from the d
 
 $_GET parameters:
 -------------------------
-ping=yes - Pinging Search Engine Systems.
+- `inline=yes`.  Output file sitemapindex.xml. In Google Webmaster Tools you can define your "Sitemap URL":
+    https://your_domain/index.php?main_page=sitemapxml&inline=yes ... and every time Google will receive a fresh sitemapindex.xml.
+- `genxml=no`. Don't generate xml-files.
+- `rebuild=yes`. Force rebuild all sitemap*.xml files.
+- `token=xxx`.  If the site uses a non-blank "Execution Token", that token must be included for the sitemaps to be generated.
 
-inline=yes - output file sitemapindex.xml. In Google Webmaster Tools you can define your "Sitemap URL":
-  https://your_domain/index.php?main_page=sitemapxml&inline=yes
-  And every time Google will get index.php?main_page=sitemapxml he will receive a fresh sitemapindex.xml.
-
-genxml=no - don't generate xml-files.
-
-rebuild=yes - force rebuild all sitemap*.xml files.
-
-Comments and suggestions are welcome.
-If you need any more sitemaps (faq, news, etc) you may ask me, but I will do only if it matches with my interests.
+Comments and suggestions are welcome.  If you need any more sitemaps (faq, news, etc) you may ask me, but I will do only if it matches with my interests.
 
 Install:
 --------------
 0. BACK UP your database & store.
 1. Unzip the SitemapXML package to your local hard drive, retaining the folder structure.
-2. Rename the "YOUR_Admin" folder in the "sitemapXML" folder to match the name of your admin folder.
-     sitemapXML/YOUR_Admin/
-3. Upload the files from "sitemapXML" to the root of your store. (DO NOT upload the "sitemapXML" folder, just the CONTENTS of this folder  (copy ALL of the add-on files to your store!! Most issues are caused by store owners who decide to NOT load ALL of the module files)
-4. Set permissions on the directory /sitemap/ to 777.
+2. Rename the `YOUR_Admin` folder in the `sitemapXML`older to match the name of your admin folder.
+3. Upload the files from `sitemapXML` to the root of your store.  **Do not** upload the `sitemapXML` folder, just the **contents** of this folder and be sure to copy **all** of the files to your store!! Most issues are caused by store owners who decide to **not** load **all** of the module files).
+4. Set permissions on the directory `/sitemap/` to 777.
 5. Go to ***Admin :: Configuration :: Sitemap XML*** and setup all parameters.
 6. Go to ***Admin :: Tools :: Sitemap XML*** (If error messages occur, change permissions on the XML files to 777).
-7. To have this automatically update and notify Google, you will need to set up a Cron job via your host's control panel.
+7. To have the site's sitemap files automatically update, you will need to set up a Cron job via your host's control panel.  Refer to the admin tool's tips for additional information.
 
 Upgrade:
 --------------
+**Note:** If you are upgrading from a version _prior to_ v4.0.0 to v4.0.0 or later, there are files to be removed from your site.  See [this](https://github.com/lat9/sitemapxml/wiki/Upgrading-to-v4.0.0-from-a-prior-version) Wiki article for additional information.
+
 0. BACK UP your database & store.
 1. Unzip the SitemapXML package to your local hard drive, retaining the folder structure.
-2. Rename the "YOUR_Admin" folder in the "sitemapXML" folder to match the name of your admin folder.
-     sitemapXML/YOUR_Admin/
-3. Upload the files from "sitemapXML" to the root of your store. (DO NOT upload the "sitemapXML" folder, just the CONTENTS of this folder (copy ALL of the add-on files to your store!! Most issues are caused by store owners who decide to NOT load ALL of the module files)
+2. Rename the `YOUR_Admin` folder in the `sitemapXML` folder to match the name of your admin folder.
+3. Upload the files from `sitemapXML` to the root of your store.  **Do not** upload the `sitemapXML` folder, just the **contents** of this folder and be sure to copy **all** of the files to your store!! Most issues are caused by store owners who decide to **not** load **all** of the module files).
 
 Un-Install:
 --------------
-1. Go to Admin -> Tools -> Sitemap XML and click "Un-Install SitemapXML SQL".
-2. Delete all files that were copied from the installation package.
+See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article for additional information.
 
 History
 --------------
+- v4.0.0 08/02/2024 (lat9)
+  - Drops support for Zen Cart versions prior to 1.5.8; testing on PHP versions 7.4 through 8.3 and Zen Cart 1.5.8 through 2.0.0-alpha1.
+  
+  - Removes search-engine "ping", since the SE's no longer support that feature.
+  
+  - Restructure/simplify the installation, see [this](https://github.com/lat9/sitemapxml/wiki/Upgrading-to-v4.0.0-from-a-prior-version) Wiki article for additional information.
+  
+  - Add messaging regarding a site's `robots.txt` file, since it's now important to identify the main XML sitemap there.
+  
+  - "Execution token" characters are limited due to storefront sanitization; messaging added to the admin tool.
+  
+  - Correct various issues when a site compresses, i.e. gzips, the sitemap files.
+  
+  - Main sitemap file didn't appear in the admin tool's file list if its name didn't begin with 'sitemap'.
+  
 - v3.9.9 21/05/2023 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.7; tested on PHP versions 7.3 through 8.2 and Zen Cart 1.5.7 through 1.5.8a.
   - Provide interoperability with PHP 8.2, defining all class variables and removing usage of the now-deprecated `utf8_encode` function.
