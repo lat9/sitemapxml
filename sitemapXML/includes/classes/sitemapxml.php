@@ -167,6 +167,7 @@ class zen_SiteMapXML
         if (!$this->genxml) {
             return false;
         }
+
         $this->sitemapFile = $file;
         $this->sitemapType = $type;
         $this->sitemapFileName = $this->_getNameFileXML($file);
@@ -226,7 +227,7 @@ class zen_SiteMapXML
             $_SESSION['language'] = $this->languages[$language_id]['directory'];
             $_SESSION['languages_id'] = $this->languages[$language_id]['id'];
             $_SESSION['languages_code'] = $this->languages[$language_id]['code'];
-            if (substr($link, 0, 7) !== 'http://' && substr($link, 0, 8) !== 'https://') {
+            if (strpos($link, 'http://') !== 0 && strpos($link, 'https://') !== 0) {
                 if ($parms != '' && $langParm != '') {
                     $langParm = '&' . $langParm;
                 }
@@ -318,7 +319,14 @@ class zen_SiteMapXML
             $total_time = microtime(true) - $this->statisticModuleTime;
             $total_queries = $db->queryCount() - $this->statisticModuleQueries;
             $total_queries_time = $db->queryTime() - $this->statisticModuleQueriesTime;
-            echo sprintf(TEXT_TOTAL_SITEMAP, ($this->sitemapFileNameNumber+1), $this->sitemapFileItemsTotal, $this->sitemapFileSizeTotal, $this->timefmt($total_time), $total_queries, $this->timefmt($total_queries_time)) . '<br>';
+            echo sprintf(TEXT_TOTAL_SITEMAP,
+                $this->sitemapFileNameNumber + 1,
+                $this->sitemapFileItemsTotal,
+                $this->sitemapFileSizeTotal,
+                $this->timefmt($total_time),
+                $total_queries,
+                $this->timefmt($total_queries_time)
+            ) . '<br>';
         }
         $this->_SitemapReSet();
     }
@@ -329,12 +337,10 @@ class zen_SiteMapXML
         global $db;
 
         if ($this->genxml) {
+            $sitemap_extension = ($this->compress === true) ? '.xml.gz' : '.xml';
             $sitemapFiles = [];
-            if ($files = glob($this->savepath . $this->sitemap . '*' . '.xml')) {
-                $sitemapFiles = array_merge($sitemapFiles, $files);
-            }
-            if ($files = glob($this->savepath . $this->sitemap . '*' . '.xml.gz')) {
-                $sitemapFiles = array_merge($sitemapFiles, $files);
+            if ($files = glob($this->savepath . $this->sitemap . '*' . $sitemap_extension)) {
+                $sitemapFiles = $files;
             }
 
             if (count($sitemapFiles) > 0) {
@@ -369,7 +375,11 @@ class zen_SiteMapXML
                 $this->_fileClose();
 
                 echo TEXT_URL_FILE . '<a href="' . $this->base_url_index . $this->sitemapFileName . '" target="_blank">' . $this->base_url_index . $this->sitemapFileName . '</a>' . '<br>';
-                echo sprintf(TEXT_WRITTEN, $this->sitemapFileItems++, $this->sitemapFileSizeTotal, $this->_fileSize($this->savepathIndex . $this->sitemapFileName)) . '<br><br>';
+                echo sprintf(TEXT_WRITTEN,
+                    $this->sitemapFileItems++,
+                    $this->sitemapFileSizeTotal,
+                    $this->_fileSize($this->savepathIndex . $this->sitemapFileName)
+                ) . '<br><br>';
             } else {
                 echo '<h2>' . TEXT_HEAD_SITEMAP_INDEX_NONE . '</h2>';//steve prevously created an invalid xml file
             }
@@ -503,11 +513,26 @@ class zen_SiteMapXML
     protected function _checkFContentSitemap(string $filename): bool
     {
         if (($fsize = $this->_fileSize($filename)) > 0) {
-            if ($fp = fopen($filename, 'r')) {
-                fseek($fp, $fsize - 128, SEEK_SET);
-                $contents = fread($fp, 128);
-                fclose($fp);
-                if (strpos($contents, '</urlset>') !== false || strpos($contents, '</sitemapindex>') !== false) {
+            // -----
+            // PHP functions used to read the file depend on whether it was
+            // gzipped or not.
+            //
+            if (pathinfo($filename, PATHINFO_EXTENSION) === 'gz') {
+                $fopen = 'gzopen';
+                $read_only = 'rb9';
+                $fread = 'gzread';
+                $fclose = 'gzclose';
+            } else {
+                $fopen = 'fopen';
+                $read_only = 'r';
+                $fread = 'fread';
+                $fclose = 'fclose';
+            }
+
+            if ($fp = $fopen($filename, $read_only)) {
+                $contents = (string)$fread($fp, 1000);
+                $fclose($fp);
+                if (strpos($contents, '<urlset ') !== false || strpos($contents, '<sitemapindex ') !== false) {
                     return true;
                 }
             }
@@ -799,8 +824,7 @@ class zen_SiteMapXML
     protected function _fileSize(string $fn): int
     {
         clearstatcache();
-        $fs = filesize($fn);
-        return $fs;
+        return (int)filesize($fn);
     }
 
     public function timefmt($s)

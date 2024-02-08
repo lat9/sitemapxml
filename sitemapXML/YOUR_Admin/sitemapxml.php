@@ -32,20 +32,16 @@ if ($action !== '') {
             $file = zen_db_prepare_input($_POST['file']);
             switch ($action) {
                 case 'view_file':
-                    $fp = fopen(DIR_FS_CATALOG . $file, 'r');
-                    if ($fp === false) {
-                        $messageStack->add_session(sprintf(TEXT_MESSAGE_FILE_ERROR_OPENED, $file), 'error');
-                        break;
-                    }
-                    header('Content-Length: ' . filesize(DIR_FS_CATALOG . $file));
                     header('Content-Type: text/plain; charset=' . CHARSET);
-                    while (!feof($fp)) {
-                        $contents = fread($fp, 8192);
-                        echo $contents;
+                    if (pathinfo($file, PATHINFO_EXTENSION) === 'gz') {
+                        echo gzdecode(file_get_contents(DIR_FS_CATALOG . $file));
+                        die();
                     }
-                    fclose($fp);
+
+                    header('Content-Length: ' . filesize(DIR_FS_CATALOG . $file));
+                    readgzfile(DIR_FS_CATALOG . $file);     //- Outputs directly to standard output!
                     die();
-                    break;
+                    break;  //- Not needed, but semantically correct
 
                 case 'truncate_file':
                     $fp = fopen(DIR_FS_CATALOG . $file, 'w');
@@ -58,6 +54,7 @@ if ($action !== '') {
                     break;
 
                 default:
+                    chmod(DIR_FS_CATALOG . $file, 0644);
                     if (unlink(DIR_FS_CATALOG . $file) !== false) {
                         $messageStack->add_session(sprintf(TEXT_MESSAGE_FILE_DELETED, $file), 'success');
                     } else {
@@ -222,7 +219,7 @@ foreach ($plugins_files as $plugin_file) {
             </thead>
             <tbody>
 <?php
-$indexFile = SITEMAPXML_SITEMAPINDEX . (SITEMAPXML_COMPRESS === 'true' ? '.xml.gz' : '.xml');
+$indexFile = SITEMAPXML_SITEMAPINDEX . '.xml';
 $sitemapFiles = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml');
 if (empty($sitemapFiles)) {
     $sitemapFiles = [];
@@ -282,11 +279,13 @@ foreach ($sitemapFiles as $file) {
         if (pathinfo($file, PATHINFO_EXTENSION) === 'gz') {
             $fopen = 'gzopen';
             $read_only = 'rb9';
+            $feof = 'gzeof';
             $fread = 'gzread';
             $fclose = 'gzclose';
         } else {
             $fopen = 'fopen';
             $read_only = 'r';
+            $feof = 'feof';
             $fread = 'fread';
             $fclose = 'fclose';
         }
@@ -295,7 +294,7 @@ foreach ($sitemapFiles as $file) {
             $items = '<span class="text-danger">Error!!!</span>';
         } else {
             $contents = '';
-            while (!feof($fp)) {
+            while (!$feof($fp)) {
                 $contents .= $fread($fp, 8192);
             }
             $fclose($fp);
