@@ -131,7 +131,7 @@ if ($token_value_ok === false) {
                             <h3><?= TEXT_SITEMAPXML_CHOOSE_PARAMETERS_REBUILD ?></h3>
                         </div>
                         <div class="panel-body">
-                            <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="javascript:window.open(\'' . $submit_link . '\', \'sitemapPing\', \'resizable=1,statusbar=5,width=860,height=800,top=0,left=0,scrollbars=yes,toolbar=yes\');return false;"') ?>
+                            <?= zen_draw_form('pingSE', FILENAME_SITEMAPXML, '', 'post', 'id="pingSE" target="_blank" onsubmit="window.open(\'' . $submit_link . '\', \'sitemapPing\', \'resizable=1, statusbar=5, width=860, height=800, top=0, left=0, scrollbars=yes, toolbar=yes\'); return false;"') ?>
                                 <button type="submit"><?= IMAGE_SEND ?></button>
                             <?= '</form>' . PHP_EOL ?>
                         </div>
@@ -201,7 +201,7 @@ foreach ($plugins_files as $plugin_file) {
 
         <h3><?= TEXT_SITEMAPXML_FILE_LIST ?></h3>
         <div>
-            <button onclick="javascript: window.location.reload();"><?= TEXT_SITEMAPXML_RELOAD_WINDOW ?></button>
+            <button onclick="window.location.reload();"><?= TEXT_SITEMAPXML_RELOAD_WINDOW ?></button>
         </div>
         <br>
         <table class="table table-sm table-responsive table-hover">
