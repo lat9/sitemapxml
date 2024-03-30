@@ -119,6 +119,8 @@ History
 - v4.0.1-beta1 30/03/2024 (lat9, torvista)
   - Zen Cart v2.0.0+ deprecates `language::catalog_languages` property.
   
+  - Correct PHP Warning/Error when creating Sitemap file number.
+  
 - v4.0.0 08/02/2024 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.8; testing on PHP versions 7.4 through 8.3 and Zen Cart 1.5.8 through 2.0.0-alpha1.
 

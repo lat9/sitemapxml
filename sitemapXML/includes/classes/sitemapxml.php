@@ -300,7 +300,7 @@ class zen_SiteMapXML
 
         if ($this->sitemapFileItems >= $this->sitemapxml_max_entries || ($this->sitemapFileSize + strlen($itemRecord)) >= $this->sitemapxml_max_size) {
             $this->_SitemapCloseFile();
-            $this->sitemapFileName = $this->_getNameFileXML($this->sitemapFile . str_pad($this->sitemapFileNameNumber, 3, '0', STR_PAD_LEFT));
+            $this->sitemapFileName = $this->_getNameFileXML($this->sitemapFile . str_pad((string)$this->sitemapFileNameNumber, 3, '0', STR_PAD_LEFT));
             if (!$this->_fileOpen($this->sitemapFileName)) {
                 return false;
             }
