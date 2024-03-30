@@ -116,21 +116,24 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
+- v4.0.1-beta1 30/03/2024 (lat9, torvista)
+  - Zen Cart v2.0.0+ deprecates `language::catalog_languages` property.
+  
 - v4.0.0 08/02/2024 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.8; testing on PHP versions 7.4 through 8.3 and Zen Cart 1.5.8 through 2.0.0-alpha1.
-  
+
   - Removes search-engine "ping", since the SE's no longer support that feature.
-  
+
   - Restructure/simplify the installation, see [this](https://github.com/lat9/sitemapxml/wiki/Upgrading-to-v4.0.0-from-a-prior-version) Wiki article for additional information.
-  
+
   - Add messaging regarding a site's `robots.txt` file, since it's now important to identify the main XML sitemap there.
-  
+
   - "Execution token" characters are limited due to storefront sanitization; messaging added to the admin tool.
-  
+
   - Correct various issues when a site compresses, i.e. gzips, the sitemap files.
-  
+
   - Main sitemap file didn't appear in the admin tool's file list if its name didn't begin with 'sitemap'.
-  
+
 - v3.9.9 21/05/2023 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.7; tested on PHP versions 7.3 through 8.2 and Zen Cart 1.5.7 through 1.5.8a.
   - Provide interoperability with PHP 8.2, defining all class variables and removing usage of the now-deprecated `utf8_encode` function.

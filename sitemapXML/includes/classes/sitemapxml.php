@@ -10,7 +10,7 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
  * 
- * updated for 1.5.8 by TC
+ * Last updated: v4.0.1
  * 
  */
 zen_define_default('TABLE_SITEMAPXML_TEMP', DB_PREFIX . 'sitemapxml_temp');
@@ -128,7 +128,14 @@ class zen_SiteMapXML
             'languages_code' => $_SESSION['languages_code'],
         ];
         $languagesIDsArray  = [];
-        foreach ($lng->catalog_languages as $language) {
+
+        // -----
+        // The language::catalog_languages is deprecated in zc200+, so
+        // retrieve the languages via the zc200+ method, if present, else
+        // the prior versions' public array.
+        //
+        $catalog_languages = (method_exists($lng, 'get_languages_by_code')) ? $lng->get_languages_by_code() : $lng->catalog_languages; 
+        foreach ($catalog_languages as $language) {
             $this->languages[$language['id']] = [
                 'directory' => $language['directory'],
                 'id' => $language['id'],
@@ -136,7 +143,7 @@ class zen_SiteMapXML
             ];
             $languagesIDsArray[] = $language['id'];
             if ($language['code'] === DEFAULT_LANGUAGE) {
-                $this->default_language_id = $language['id'];
+                $this->default_language_id = (int)$language['id'];
             }
         }
         if (SITEMAPXML_USE_ONLY_DEFAULT_LANGUAGE === 'true') {
