@@ -11,7 +11,7 @@
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
  * @version $Id: sitemapxml.php, v 3.9.9 lat9 20230521
  * 
- * TC updated for 1.5.8
+ * Last updated: v4.0.1
  */
 require 'includes/application_top.php';
 
@@ -252,24 +252,24 @@ $sitemapFiles = array_unique($sitemapFiles);
 clearstatcache();
 $l = strlen(DIR_FS_CATALOG);
 foreach ($sitemapFiles as $file) {
+    $file_exists = file_exists($file);
     $f['name'] = substr($file, $l);
-    $f['size'] = filesize($file);
-    $f['time'] = date(PHP_DATE_TIME_FORMAT, filemtime($file));
-    $f['perms'] = substr(sprintf('%o', fileperms($file)), -4);
+    $f['size'] = ($file_exists === true) ? filesize($file) : 0;
+    $f['time'] = ($file_exists === true) ? date(PHP_DATE_TIME_FORMAT, filemtime($file)) : '&mdash;';
+    $f['perms'] = ($file_exists === true) ? substr(sprintf('%o', fileperms($file)), -4) : '&mdash;';
     $class = '';
     $comments = '';
     $type = '';
     $items = '';
-    if (!is_writable($file)) {
+    if ($f['size'] == 0) {
+        $class .= ' zero';
+        $comments .= ' ' . TEXT_SITEMAPXML_FILE_LIST_COMMENTS_IGNORED;
+    } elseif (!is_writable($file)) {
         $class .= ' alert';
         $comments .= ' ' . TEXT_SITEMAPXML_FILE_LIST_COMMENTS_READONLY;
     }
     if ($f['name'] == $indexFile) {
         $class .= ' index';
-    }
-    if ($f['size'] == 0) {
-        $class .= ' zero';
-        $comments .= ' ' . TEXT_SITEMAPXML_FILE_LIST_COMMENTS_IGNORED;
     }
     if ($f['size'] > 0) {
         // -----
@@ -341,6 +341,8 @@ foreach ($sitemapFiles as $file) {
                         <?= '</form>' . PHP_EOL ?>
 <?php
     }
+
+    if ($file_exists === true) {
 ?>
                         <?= zen_draw_form('delete_file', FILENAME_SITEMAPXML, '', 'post', 'onsubmit="return confirm(\'' . sprintf(TEXT_ACTION_DELETE_FILE_CONFIRM, $f['name']) . '\');"') ?>
                             <?= zen_draw_hidden_field('action', 'delete_file') ?>
@@ -350,6 +352,7 @@ foreach ($sitemapFiles as $file) {
                     </td>
                 </tr>
 <?php
+    }
 }
 ?>
             </tbody>

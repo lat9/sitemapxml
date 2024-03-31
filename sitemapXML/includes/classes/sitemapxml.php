@@ -9,9 +9,8 @@
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
- * 
+ *
  * Last updated: v4.0.1
- * 
  */
 zen_define_default('TABLE_SITEMAPXML_TEMP', DB_PREFIX . 'sitemapxml_temp');
 zen_define_default('SITEMAPXML_MAX_ENTRIES', 5000);
@@ -830,6 +829,10 @@ class zen_SiteMapXML
 
     protected function _fileSize(string $fn): int
     {
+        if (!file_exists($fn)) {
+            return 0;
+        }
+
         clearstatcache();
         return (int)filesize($fn);
     }
