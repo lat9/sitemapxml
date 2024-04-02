@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.0 08.Feb.2024
+#### v4.0.1 02.Apr.2024
 
 ### Authors
 
@@ -116,7 +116,7 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.0.1-beta2 31/03/2024 (lat9, torvista)
+- v4.0.1 02/04/2024 (lat9, torvista)
   - Zen Cart v2.0.0+ deprecates `language::catalog_languages` property.
   
   - Correct PHP Warning/Error when creating a new Sitemap file number.
