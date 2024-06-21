@@ -118,7 +118,7 @@ if (SESSION_FORCE_COOKIE_USE === 'True') {
 ?>
         <h1><?= HEADING_TITLE ?> <small>v<?= SITEMAPXML_VERSION ?></small></h1>
         <div class="row">
-            <h2><? TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
+            <h2><?= TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
             <div class="col-md-6">
                 <div class="col-md-12">
 <?php
