@@ -112,7 +112,7 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
                 <div class="col-md-12">
 
 <?php
-$token_value_ok = (SITEMAPXML_EXECUTION_TOKEN === '' || preg_match('/[^\/0-9a-zA-Z_.-]/', SITEMAPXML_EXECUTION_TOKEN) === 1);
+$token_value_ok = (SITEMAPXML_EXECUTION_TOKEN === '' || preg_match('/[^\/0-9a-zA-Z_.-]/', SITEMAPXML_EXECUTION_TOKEN) === 0);
 if ($token_value_ok === false) {
 ?>
                     <div class="panel panel-danger">
