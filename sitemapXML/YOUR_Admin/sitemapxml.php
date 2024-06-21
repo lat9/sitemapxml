@@ -11,7 +11,7 @@
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
  * @version $Id: sitemapxml.php, v 3.9.9 lat9 20230521
  * 
- * Last updated: v4.0.1
+ * Last updated: v4.0.2
  */
 require 'includes/application_top.php';
 

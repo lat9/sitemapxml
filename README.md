@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.1 02.Apr.2024
+#### v4.0.2-beta1 21.Jun.2024
 
 ### Authors
 
@@ -22,13 +22,11 @@ It can be downloaded from the Zen Cart Plugins repository here: https://www.zen-
 
 Zen-Cart Versions Supported
 --------------
-1.5.8[a], 2.0.0
+1.5.8[a], 2.0.x
 
 Support thread
 --------------
 https://www.zen-cart.com/showthread.php?126810-SitemapXML-v-2
-
-https://github.com/lat9/sitemapxml
 
 Affected files
 --------------
@@ -116,13 +114,14 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
+- v4.0.2-beta1 06/21/2024 (lat9, marco-pm)
+  - Correct reverse-logic when determining if Sitemap 'Execution Token' is correct.
 - v4.0.1 02/04/2024 (lat9, torvista)
   - Zen Cart v2.0.0+ deprecates `language::catalog_languages` property.
   
   - Correct PHP Warning/Error when creating a new Sitemap file number.
   
   - Correct PHP Warnings when `/sitemap.xml` doesn't exist.
-  
 - v4.0.0 08/02/2024 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.8; testing on PHP versions 7.4 through 8.3 and Zen Cart 1.5.8 through 2.0.0-alpha1.
 
@@ -137,7 +136,6 @@ History
   - Correct various issues when a site compresses, i.e. gzips, the sitemap files.
 
   - Main sitemap file didn't appear in the admin tool's file list if its name didn't begin with 'sitemap'.
-
 - v3.9.9 21/05/2023 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.7; tested on PHP versions 7.3 through 8.2 and Zen Cart 1.5.7 through 1.5.8a.
   - Provide interoperability with PHP 8.2, defining all class variables and removing usage of the now-deprecated `utf8_encode` function.
@@ -145,13 +143,10 @@ History
   - Corrects MySQL fatal errors when run with more strict (e.g. MySQL 8) SQL servers.
   - "Refreshed" the majority of the PHP files to use now-current PHP and Zen Cart programming styles and removing code that was required for Zen Cart versions prior to 1.5.7 and/or PHP versions less than 7.3.
   - Removed configuration multi-language support.
-
 - v3.9.8 03/05/2023 (highburyeye)
   - Additional support for PHP 8.1
-
 - v3.9.7 28/04/2023 (highburyeye)
   - Add support for Zen Cart 1.5.8
-
 - v3.9.6 06.07.2019 13:33
   - Arrange for PHP 7.3
   - Incorporate fixes posted to forum
@@ -160,63 +155,47 @@ History
   - Addressed strict php notifications
 - v3.9.5 17.04.2017 15:55
   - Add configuration multilanguage support
-
 - v3.9.4 17.04.2017 14:27
   - Another Auto installer Bug fixes
 - v3.9.3 16.04.2017 18:35
   - Auto installer Bug fixes
-
 - v3.9.2 09.11.2016 13:37
   - Bug fixes (Select plugins)
-
 - v3.9.1 29.08.2016 18:56
   - Add auto installer. Thanks to Frank Riegel aka frank18
-
 - v3.8.0 07.07.2016 12:39
   - Code Review. Thanks to steve aka torvista
-
 - v3.7.0 07.07.2016 11:25
   - Add configuration parameter for categories paging
-
 - v3.6.0 26.04.2016 10:33
   - Bug fixes
-
 - v3.3.1 31.01.2015 16:27
   - Bug fixes
   - Add Product reviews pages
   - Add plugin control
-
 - v3.2.12 19.09.2013 8:06
   - Replace absolute path to .xsl
-
 - v3.2.10 22.04.2013 8:15
   - Add confirm() to delete/truncate
-
 - v 3.2.9 24.02.2013 13:48
   - Bug fixes
   - Delete xml validations
   - Delete absolute path from information message
-
 - v3.2.8 24.01.2013 18:10
   - Add url encoded for RFC 3986 compatibility.
-
 - v3.2.7 24.09.2012 13:23
   - ReadMe editing - thanks to Scott C Wilson aka swguy (https://www.zen-cart.com/member.php?22320-swguy)
   - Products additional images sitemap support
   - Bug fix 'inline=yes'
-
 - v 3.2.6 17.06.2012 16:13
   - Bug fixes
   - Rewrite gss.xls
-
 - v3.2.5 31.05.2012 14:52
   - Add parameter "Use cPath parameter in products url". Coordinate this value with the value of variable $includeCPath in file init_canonical.php
-
 - v3.2.4 28.05.2012 13:38
   - Bug fixes
   - Add parameter "Check Dublicates"
   - Add parameter "Sitemap directory"
-
 - v3.2.2 07.05.2012 19:12
   - Bug fixes
   - Traditional code cleaning
@@ -226,31 +205,24 @@ History
   - Add 'Start Security Token'
   - Rename sitemapxml_homepage.php to sitemapxml_mainpage.php
   - Add image sitemap support https://support.google.com/webmasters/bin/answer.py?answer=178636 for products, categories, manufacturers
-
 - v3.1.0 14.12.2011 13:32
   - Code cleaning, Readme corrected, Small bug fix
   - Replace Configuration parameter 'Generate language for default language' by 'Using parameter language in links'
   - Modified algorithm for processing multi-language links
   - Add Sitemap Files List to admin
-
 - v3.0.5 02.12.2011 02:11
   - Support Box News module, cleaning
-
 - v3.0.4 30.09.2011 14:58
   - Code cleaning
   - Readme corrected
   - Small bug fix
   - Zen-Cart 1.5.0 compliant
   - Replace admin $_GET by $_POST
-
 - v3.0.3 27.08.2011 13:11
   - Small bug fix, delete Zen-Cart 1.5.0 Autoinstall
-
 - v3.0.2 11.08.2011 16:14
   - Lot of changes and bug fixed, Zen-Cart 1.5.0 Support, MagicSeo Support
-
 - v2.1.0 30.04.2009 10:35
   - Lot of changes and bug fixed
-
 - v2.0.0 02.02.2009 19:21
   - Initial version

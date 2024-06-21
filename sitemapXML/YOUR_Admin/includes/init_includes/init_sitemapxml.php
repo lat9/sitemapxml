@@ -11,7 +11,7 @@ if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
 
-define('SITEMAPXML_CURRENT_VERSION', '4.0.1');
+define('SITEMAPXML_CURRENT_VERSION', '4.0.2-beta1');
 
 // -----
 // Wait until an admin is logged in before seeing if any initialization steps need to be performed.
