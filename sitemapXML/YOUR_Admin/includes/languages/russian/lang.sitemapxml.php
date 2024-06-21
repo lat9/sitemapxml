@@ -2,6 +2,8 @@
 /**
  * Sitemap XML Feed
  *
+ * Last updated: v4.0.2
+ *
  * @package Sitemap XML Feed
  * @copyright Copyright 2005-2016 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2016 Zen Cart Development Team
@@ -21,6 +23,8 @@ $define = [
 
     'ERROR_SITEMAPXML_TOKEN_INVALID_HDR' => 'Sitemaps cannot be created',
     'ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE' => 'The execution-token (%1$s) you supplied contains invalid characters.',
+
+    'WARNING_SITEMAPXML_FORCE_COOKIE_USE' => 'Search engines will not be able to crawl your sitemap until you change the configuration setting <samp>Sessions :: Force Cookie Use</samp> to <b>False</b>.',
 
     'TEXT_SITEMAPXML_ROBOTS_HDR' => 'Your Site\'s <code>robots.txt</code> File',
     'SUCCESS_SITEMAPXML_ROBOTS_TXT_OK' => 'Your site\'s <code>robots.txt</code> is pointing search engines to your <code>%1$s</code> Sitemap XML!',

@@ -105,12 +105,22 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
 ?>
     <?php require DIR_WS_INCLUDES . 'header.php'; ?>
     <div class="container-fluid">
+<?php
+// -----
+// Issue a warning to the admin if "Configuration :: Sessions :: Force Cookie Use" is found
+// to be 'True'.  If that's the case, search-engine crawlers will never index the site's pages.
+//
+if (SESSION_FORCE_COOKIE_USE === 'True') {
+    $messageStack->reset();
+    $messageStack->add(WARNING_SITEMAPXML_FORCE_COOKIE_USE, 'warning');
+    echo $messageStack->output();
+}
+?>
         <h1><?= HEADING_TITLE ?> <small>v<?= SITEMAPXML_VERSION ?></small></h1>
         <div class="row">
             <h2><? TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
             <div class="col-md-6">
                 <div class="col-md-12">
-
 <?php
 $token_value_ok = (SITEMAPXML_EXECUTION_TOKEN === '' || preg_match('/[^\/0-9a-zA-Z_.-]/', SITEMAPXML_EXECUTION_TOKEN) === 0);
 if ($token_value_ok === false) {
