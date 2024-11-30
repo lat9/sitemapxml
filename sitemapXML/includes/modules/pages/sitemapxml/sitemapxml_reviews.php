@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.0.3
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2012 Zen Cart Development Team
@@ -29,7 +31,13 @@ if ($sitemapXML->SitemapOpen('reviews', $last_date)) {
     );
     $sitemapXML->SitemapSetMaxItems($reviews->RecordCount());
     foreach ($reviews as $next_review) {
-        $sitemapXML->writeItem(FILENAME_PRODUCT_REVIEWS_INFO, 'products_id=' . $next_review['products_id'] . '&reviews_id=' . $next_review['reviews_id'], $next_review['language_id'], $next_review['last_date'], SITEMAPXML_REVIEWS_CHANGEFREQ);
+        $sitemapXML->writeItem(
+            FILENAME_PRODUCT_REVIEWS_INFO,
+            'products_id=' . $next_review['products_id'] . '&reviews_id=' . $next_review['reviews_id'],
+            $next_review['language_id'],
+            $next_review['last_date'] ?? $last_date,
+            SITEMAPXML_REVIEWS_CHANGEFREQ
+        );
     }
 
     $sitemapXML->SitemapClose();

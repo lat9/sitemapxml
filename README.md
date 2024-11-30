@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.2 21.Jun.2024
+#### v4.0.3-beta1 30.Nov.2024
 
 ### Authors
 
@@ -114,6 +114,8 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
+- v4.0.3-beta1 20241130 (lat9)
+  - Correct PHP warnings when a review's last-update date is NULL.
 - v4.0.2 20240621 (lat9, marco-pm)
   - Correct reverse-logic when determining if Sitemap 'Execution Token' is correct.
   - Issue warning message in admin tool if `Configuration :: Sessions :: Force Cookie Use` is found to be 'True'; search-engine crawlers won't be able to index the site.
