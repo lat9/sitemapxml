@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.3-beta1 30.Nov.2024
+#### v4.0.3-beta1 02.Dec.2024
 
 ### Authors
 
@@ -22,7 +22,7 @@ It can be downloaded from the Zen Cart Plugins repository here: https://www.zen-
 
 Zen-Cart Versions Supported
 --------------
-1.5.8[a], 2.0.x
+1.5.8[a], 2.0.x, 2.1.0
 
 Support thread
 --------------
@@ -114,8 +114,8 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.0.3-beta1 20241130 (lat9)
-  - Correct PHP warnings when a review's last-update date is NULL.
+- v4.0.3-beta1 20241202 (lat9)
+  - Correct PHP warnings when a review's or manufacturer's last-update date is NULL.
 - v4.0.2 20240621 (lat9, marco-pm)
   - Correct reverse-logic when determining if Sitemap 'Execution Token' is correct.
   - Issue warning message in admin tool if `Configuration :: Sessions :: Force Cookie Use` is found to be 'True'; search-engine crawlers won't be able to index the site.

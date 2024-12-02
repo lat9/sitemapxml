@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.0.3
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2012 Zen Cart Development Team
@@ -38,7 +40,14 @@ if ($sitemapXML->SitemapOpen('manufacturers', $last_date)) {
             ];
             $xtra = $sitemapXML->imagesTags($images, SITEMAPXML_MANUFACTURERS_IMAGES_CAPTION, SITEMAPXML_MANUFACTURERS_IMAGES_LICENSE);
         }
-        $sitemapXML->writeItem(FILENAME_DEFAULT, 'manufacturers_id=' . $next_manufacturer['manufacturers_id'], $next_manufacturer['languages_id'], $next_manufacturer['last_date'], SITEMAPXML_MANUFACTURERS_CHANGEFREQ, $xtra);
+        $sitemapXML->writeItem(
+            FILENAME_DEFAULT,
+            'manufacturers_id=' . $next_manufacturer['manufacturers_id'],
+            $next_manufacturer['languages_id'],
+            $next_manufacturer['last_date'] ?? $last_date,
+            SITEMAPXML_MANUFACTURERS_CHANGEFREQ,
+            $xtra
+        );
     }
 
     $sitemapXML->SitemapClose();
