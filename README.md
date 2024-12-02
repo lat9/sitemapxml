@@ -114,7 +114,7 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.0.3-beta1 20241202 (lat9)
+- v4.0.3 20241202 (lat9)
   - Correct PHP warnings when a review's or manufacturer's last-update date is NULL.
 - v4.0.2 20240621 (lat9, marco-pm)
   - Correct reverse-logic when determining if Sitemap 'Execution Token' is correct.
