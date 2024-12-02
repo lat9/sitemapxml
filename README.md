@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.3-beta1 02.Dec.2024
+#### v4.0.3 02.Dec.2024
 
 ### Authors
 
