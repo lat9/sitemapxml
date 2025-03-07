@@ -10,7 +10,7 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
  *
- * Last updated: v4.0.1
+ * Last updated: v4.0.4
  */
 zen_define_default('TABLE_SITEMAPXML_TEMP', DB_PREFIX . 'sitemapxml_temp');
 zen_define_default('SITEMAPXML_MAX_ENTRIES', 5000);
@@ -221,7 +221,7 @@ class zen_SiteMapXML
 
     public function writeItem($link, $parms = '', $language_id = 0, $lastmod = '', $changefreq = '', $xtra = '')
     {
-        if ($lastmod !== '') {
+        if (!empty($lastmod)) {
             $lastmod = strtotime($lastmod);
         }
 
