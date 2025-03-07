@@ -459,7 +459,10 @@ class zen_SiteMapXML
     // ZC Sniffer class already offers this feature.
     public function dbTableExist(string $table): bool
     {
-        return $GLOBALS['sniffer']->table_exists($table);
+        if (!defined($table) || empty(constant($table))) {
+            return false;
+        }
+        return $GLOBALS['sniffer']->table_exists(constant($table));
     }
 
     // ZC Sniffer class already offers this feature.
