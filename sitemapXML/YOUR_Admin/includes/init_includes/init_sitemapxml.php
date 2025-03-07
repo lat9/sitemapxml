@@ -333,7 +333,7 @@ $install_configuration = [
 
     'SITEMAPXML_EZPAGES_ORDERBY' => [
         'EZPages order by',
-        'sidebox_sort_order ASC, header_sort_order ASC, footer_sort_order ASC',
+        'p.sidebox_sort_order ASC, p.header_sort_order ASC, p.footer_sort_order ASC',
         '',
         60,
         null,
@@ -502,6 +502,27 @@ if (!zen_page_key_exists('sitemapxml')) {
 }
 if (!zen_page_key_exists('sitemapxmlConfig')) {
     zen_register_admin_page('sitemapxmlConfig', 'BOX_CONFIGURATION_SITEMAPXML', 'FILENAME_CONFIGURATION', "gID=$cgi", 'configuration', 'Y');
+}
+
+// -----
+// With the addition of TABLE_EZPAGES_TEXT, previous versions of the ezpages' order-by
+// configuration setting don't include the 'p.' table prefix.  Add that if the
+// currently-configured order-by clause elements don't start with either 'p.' or 'pt.'.
+//
+if (defined('SITEMAPXML_EZPAGES_ORDERBY') && SITEMAPXML_EZPAGES_ORDERBY !== '') {
+    $order_by_elements = explode(',', str_replace(' ', '', SITEMAPXML_EZPAGES_ORDERBY));
+    foreach ($order_by_elements as $i => $element) {
+        if (strpos($element, 'p.') !== 0 && strpos($element, 'pt.') !== 0) {
+            $order_by_elements[$i] = 'p.' . $element;
+        }
+    }
+    $order_by = implode(', ', $order_by_elements);
+    $db->Execute(
+        "UPDATE " . TABLE_CONFIGURATION . "
+            SET configuration_value = '" . zen_db_input($order_by) . "'
+          WHERE configuration_key = 'SITEMAPXML_EZPAGES_ORDERBY'
+          LIMIT 1"
+    );
 }
 
 // -----
