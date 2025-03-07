@@ -118,6 +118,7 @@ History
   - Use `!empty` instead of direct comparison to an empty string, possible `NULL` values.
   - Don't include manufacturers with no products in the manufacturers' sitemap output.
   - Correct detection of plugin-supplied additional tables, e.g. `TABLE_BOX_NEWS`.
+  - `TABLE_BOX_NEWS`, 'news_published_date' field can be null.
 - v4.0.3 20241202 (lat9)
   - Correct PHP warnings when a review's or manufacturer's last-update date is NULL.
 - v4.0.2 20240621 (lat9, marco-pm)
