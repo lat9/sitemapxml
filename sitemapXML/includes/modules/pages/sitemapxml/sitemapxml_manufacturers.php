@@ -2,7 +2,7 @@
 /**
  * Sitemap XML
  *
- * Last updated: v4.0.3
+ * Last updated: v4.0.4
  *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
@@ -30,6 +30,20 @@ if ($sitemapXML->SitemapOpen('manufacturers', $last_date)) {
     );
     $sitemapXML->SitemapSetMaxItems($manufacturers->RecordCount());
     foreach ($manufacturers as $next_manufacturer) {
+        // -----
+        // Don't include manufacturers with no products.
+        //
+        $manufacturers_products = $db->Execute(
+            "SELECT products_id
+               FROM " . TABLE_PRODUCTS . "
+              WHERE manufacturers_id = " . (int)$next_manufacturer['manufacturers_id'] . "
+                AND products_status = 1
+              LIMIT 1"
+        );
+        if ($manufacturers_products->EOF) {
+            continue;
+        }
+
         $xtra = '';
         if (!empty($next_manufacturer['manufacturers_image']) && is_file(DIR_FS_CATALOG . DIR_WS_IMAGES . $next_manufacturer['manufacturers_image'])) {
             $images = [
