@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.3 02.Dec.2024
+#### v4.0.4 12.Mar.2025
 
 ### Authors
 
@@ -114,7 +114,7 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.0.4-beta1 2025-03-07 (lat9, prosela)
+- v4.0.4 2025-03-12 (lat9, proseLA)
   - Use `!empty` instead of direct comparison to an empty string, possible `NULL` values.
   - Don't include manufacturers with no products in the manufacturers' sitemap output.
   - Correct detection of plugin-supplied additional tables, e.g. `TABLE_BOX_NEWS`.
