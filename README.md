@@ -114,6 +114,8 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
+- v4.0.5-beta1 2025-03-13 (lat9)
+  - Don't remove spaces from EZ-Pages' sort-order, results in MySQL error.
 - v4.0.4 2025-03-12 (lat9, proseLA)
   - Use `!empty` instead of direct comparison to an empty string, possible `NULL` values.
   - Don't include manufacturers with no products in the manufacturers' sitemap output.
@@ -128,9 +130,9 @@ History
   - Correct PHP short-code, e.g. `<? `, usage.  Should be `<?=`.
 - v4.0.1 02/04/2024 (lat9, torvista)
   - Zen Cart v2.0.0+ deprecates `language::catalog_languages` property.
-  
+
   - Correct PHP Warning/Error when creating a new Sitemap file number.
-  
+
   - Correct PHP Warnings when `/sitemap.xml` doesn't exist.
 - v4.0.0 08/02/2024 (lat9)
   - Drops support for Zen Cart versions prior to 1.5.8; testing on PHP versions 7.4 through 8.3 and Zen Cart 1.5.8 through 2.0.0-alpha1.
