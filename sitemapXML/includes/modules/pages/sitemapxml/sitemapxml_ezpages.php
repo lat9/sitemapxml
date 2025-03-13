@@ -23,6 +23,7 @@ if (SITEMAPXML_EZPAGES_ORDERBY !== '') {
     //
     $order_by_elements = explode(',', SITEMAPXML_EZPAGES_ORDERBY);
     foreach ($order_by_elements as $i => $element) {
+        $element = ltrim($element);
         if (strpos($element, 'p.') !== 0 && strpos($element, 'pt.') !== 0) {
             $order_by_elements[$i] = 'p.' . $element;
         }
