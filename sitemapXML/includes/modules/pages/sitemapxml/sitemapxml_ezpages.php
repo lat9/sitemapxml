@@ -21,7 +21,7 @@ if (SITEMAPXML_EZPAGES_ORDERBY !== '') {
     // configuration setting don't include the 'p.' table prefix.  Add that if the
     // currently-configured order-by clause doesn't start with either 'p.' or 'pt.'.
     //
-    $order_by_elements = explode(',', SITEMAPXML_EZPAGES_ORDERBY);
+    $order_by_elements = array_map('trim', explode(',', SITEMAPXML_EZPAGES_ORDERBY));
     foreach ($order_by_elements as $i => $element) {
         $element = ltrim($element);
         if (strpos($element, 'p.') !== 0 && strpos($element, 'pt.') !== 0) {
