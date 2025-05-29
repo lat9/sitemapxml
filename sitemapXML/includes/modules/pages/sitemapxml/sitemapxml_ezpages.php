@@ -72,9 +72,10 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
            FROM " . TABLE_EZPAGES . " p " . $from . "
           WHERE p.alt_url_external = ''
             AND (
-                (p.status_header = 1 AND p.header_sort_order > 0)
-                 OR (p.status_sidebox = 1 AND p.sidebox_sort_order > 0)
-                 OR (p.status_footer = 1 AND p.footer_sort_order > 0)
+                p.status_visible = 1
+                OR (p.status_header = 1 AND p.header_sort_order > 0)
+                OR (p.status_sidebox = 1 AND p.sidebox_sort_order > 0)
+                OR (p.status_footer = 1 AND p.footer_sort_order > 0)
                 )
            AND p.status_toc != 0" .
            $where . "
@@ -83,15 +84,16 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
     $toc_chapter_array = [];
     foreach ($page_query as $next_chapter) {
         $toc_chapter_array[$next_chapter['toc_chapter']] = $next_chapter['toc_chapter'];
-
     }
+
     $where_toc = (count($toc_chapter_array) !== 0) ? (" OR p.toc_chapter IN (" . implode(',', $toc_chapter_array) . ")") : '';
     $page_query_sql =
         "SELECT *" . $select . "
            FROM " . TABLE_EZPAGES . " p " . $from . "
           WHERE p.alt_url_external = ''
             AND (
-                (p.status_header = 1 AND p.header_sort_order > 0)
+                p.status_visible = 1
+                OR (p.status_header = 1 AND p.header_sort_order > 0)
                 OR (p.status_sidebox = 1 AND p.sidebox_sort_order > 0)
                 OR (p.status_footer = 1 AND p.footer_sort_order > 0) " .
                 $where_toc . "
