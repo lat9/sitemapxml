@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.5-beta2 29.May.2025
+#### v4.0.5 31.May.2025
 
 ### Authors
 
@@ -114,7 +114,7 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.0.5-beta2 2025-05-29 (lat9)
+- v4.0.5 2025-05-31 (lat9)
   - Don't remove spaces from EZ-Pages' sort-order, results in MySQL error.
   - EZ-Pages with a `Visible` status are now included, regardless of header/footer/sidebox status.
 - v4.0.4 2025-03-12 (lat9, proseLA)
