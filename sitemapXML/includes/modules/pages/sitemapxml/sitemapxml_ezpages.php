@@ -86,7 +86,7 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
         $toc_chapter_array[$next_chapter['toc_chapter']] = $next_chapter['toc_chapter'];
     }
 
-    $where_toc = (count($toc_chapter_array) !== 0) ? (" OR p.toc_chapter IN (" . implode(',', $toc_chapter_array) . ")") : '';
+    // - ensures only exludes ezpages that are disabled from all 
     $page_query_sql =
         "SELECT *" . $select . "
            FROM " . TABLE_EZPAGES . " p " . $from . "
@@ -95,10 +95,11 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
                 p.status_visible = 1
                 OR (p.status_header = 1 AND p.header_sort_order > 0)
                 OR (p.status_sidebox = 1 AND p.sidebox_sort_order > 0)
-                OR (p.status_footer = 1 AND p.footer_sort_order > 0) " .
-                $where_toc . "
-                )" .
+                OR (p.status_footer = 1 AND p.footer_sort_order > 0)
+                OR p.status_toc != 0
+            )" .
             $where . (($order_by !== '') ? " ORDER BY $order_by" : '');
+    
     $page_query = $db->Execute($page_query_sql); // pages_id
     $sitemapXML->SitemapSetMaxItems($page_query->RecordCount());
     foreach ($page_query as $ez_page) {
