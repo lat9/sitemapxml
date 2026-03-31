@@ -22,7 +22,7 @@ It can be downloaded from the Zen Cart Plugins repository here: https://www.zen-
 
 Zen-Cart Versions Supported
 --------------
-1.5.8[a], 2.0.x, 2.1.0
+1.5.8[a], 2.0.x, 2.1.0, 2.2.1
 
 Support thread
 --------------
@@ -98,6 +98,12 @@ Install:
 5. Go to ***Admin :: Configuration :: Sitemap XML*** and setup all parameters.
 6. Go to ***Admin :: Tools :: Sitemap XML*** (If error messages occur, change permissions on the XML files to 777).
 7. To have the site's sitemap files automatically update, you will need to set up a Cron job via your host's control panel.  Refer to the admin tool's tips for additional information.
+
+Encapsulated plugin note:
+--------------
+When packaged for use as a Zen Cart encapsulated plugin (`zc_plugins`), the module's admin and storefront processing now detect and load their sitemap-generator modules from either installation style.
+
+If you extract a package directly via cPanel or another hosting file manager, verify permissions before installation. Typical settings are directories `755`, files `644`, with the sitemap output directory writable by PHP.
 
 Upgrade:
 --------------

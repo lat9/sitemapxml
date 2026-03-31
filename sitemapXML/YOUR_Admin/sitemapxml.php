@@ -186,7 +186,10 @@ if (!file_exists(DIR_FS_CATALOG . 'robots.txt')) {
                         <?= zen_draw_form('selectPlugins', FILENAME_SITEMAPXML, '', 'post', 'id="selectPlugins"') ?>
                             <?= zen_draw_hidden_field('action', 'select_plugins') ?>
 <?php
-$plugins_files = glob(DIR_FS_CATALOG_MODULES . 'pages/sitemapxml/sitemapxml_*.php');
+$plugins_files = glob(dirname(__DIR__) . '/includes/modules/pages/sitemapxml/sitemapxml_*.php');
+if (empty($plugins_files)) {
+    $plugins_files = glob(DIR_FS_CATALOG_MODULES . 'pages/sitemapxml/sitemapxml_*.php');
+}
 if (empty($plugins_files)) {
     $plugins_files = [];
 }

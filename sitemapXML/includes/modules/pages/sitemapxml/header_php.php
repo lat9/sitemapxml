@@ -24,9 +24,14 @@ set_time_limit(0);
 $zco_notifier->notify('NOTIFY_HEADER_START_SITEMAPXML');
 
 /**
- * load the site map class
+ * Load the site map class from either a classic installation or an encapsulated plugin.
  */
-require DIR_WS_CLASSES . 'sitemapxml.php';
+$plugin_local_class = dirname(__DIR__, 3) . '/classes/sitemapxml.php';
+if (file_exists($plugin_local_class)) {
+    require $plugin_local_class;
+} else {
+    require DIR_WS_CLASSES . 'sitemapxml.php';
+}
 
 /**
  * load language files
@@ -54,8 +59,13 @@ if (is_file($tpl_dir . '/gss.xsl')) {
     $sitemapXML->setStylesheet($tpl_dir . '/gss.xsl');
 }
 
-$SiteMapXMLmodules = [];
-$SiteMapXMLmodules = glob(DIR_WS_MODULES . 'pages/' . $current_page_base . '/sitemapxml_*.php');
+$SiteMapXMLmodules = glob(__DIR__ . '/sitemapxml_*.php');
+if (empty($SiteMapXMLmodules)) {
+    $SiteMapXMLmodules = glob(DIR_WS_MODULES . 'pages/' . $current_page_base . '/sitemapxml_*.php');
+}
+if (empty($SiteMapXMLmodules)) {
+    $SiteMapXMLmodules = [];
+}
 
 $pluginsFilesActive = explode(';', SITEMAPXML_PLUGINS);
 $temp = [];
