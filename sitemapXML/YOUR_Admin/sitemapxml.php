@@ -11,7 +11,7 @@
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
  * @version $Id: sitemapxml.php, v 3.9.9 lat9 20230521
  * 
- * Last updated: v4.0.2
+ * Last updated: v4.1.0
  */
 require 'includes/application_top.php';
 
@@ -110,19 +110,19 @@ $submit_link = zen_catalog_href_link(FILENAME_SITEMAPXML, $start_parms);
 // Issue a warning to the admin if "Configuration :: Sessions :: Force Cookie Use" is found
 // to be 'True'.  If that's the case, search-engine crawlers will never index the site's pages.
 //
-if (SESSION_FORCE_COOKIE_USE === 'True') {
+if (zen_config('SESSION_FORCE_COOKIE_USE') === 'True') {
     $messageStack->reset();
     $messageStack->add(WARNING_SITEMAPXML_FORCE_COOKIE_USE, 'warning');
     echo $messageStack->output();
 }
 ?>
-        <h1><?= HEADING_TITLE ?> <small>v<?= SITEMAPXML_VERSION ?></small></h1>
+        <h1><?= HEADING_TITLE ?> <small>v<?= zen_config('SITEMAPXML_VERSION') ?></small></h1>
         <div class="row">
             <h2><?= TEXT_SITEMAPXML_INSTRUCTIONS_HEAD ?></h2>
             <div class="col-md-6">
                 <div class="col-md-12">
 <?php
-$token_value_ok = (SITEMAPXML_EXECUTION_TOKEN === '' || preg_match('/[^\/0-9a-zA-Z_.-]/', SITEMAPXML_EXECUTION_TOKEN) === 0);
+$token_value_ok = (zen_config('SITEMAPXML_EXECUTION_TOKEN') === '' || preg_match('/[^\/0-9a-zA-Z_.-]/', zen_config('SITEMAPXML_EXECUTION_TOKEN')) === 0);
 if ($token_value_ok === false) {
 ?>
                     <div class="panel panel-danger">
@@ -130,7 +130,7 @@ if ($token_value_ok === false) {
                             <h3><?= ERROR_SITEMAPXML_TOKEN_INVALID_HDR ?></h3>
                         </div>
                         <div class="panel-body">
-                            <p><?= sprintf(ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE, SITEMAPXML_EXECUTION_TOKEN) ?></p>
+                            <p><?= sprintf(ERROR_SITEMAPXML_TOKEN_INVALID_MESSAGE, zen_output_string_protected(zen_config('SITEMAPXML_EXECUTION_TOKEN'))) ?></p>
                         </div>
                     </div>
 <?php
@@ -151,7 +151,7 @@ if ($token_value_ok === false) {
 ?>
                 </div>
 <?php
-if (!file_exists(DIR_FS_CATALOG . 'robots.txt')) {
+if (!is_file(DIR_FS_CATALOG . 'robots.txt')) {
     $robots_panel_class = 'danger';
     $robots_message = WARNING_SITEMAPXML_NO_ROBOTS_FILE;
 } else {
@@ -190,7 +190,7 @@ $plugins_files = glob(DIR_FS_CATALOG_MODULES . 'pages/sitemapxml/sitemapxml_*.ph
 if (empty($plugins_files)) {
     $plugins_files = [];
 }
-$plugins_files_active = explode(';', SITEMAPXML_PLUGINS);
+$plugins_files_active = explode(';', zen_config('SITEMAPXML_PLUGINS'));
 foreach ($plugins_files as $plugin_file) {
     $plugin_file = basename($plugin_file);
     $plugin_name = str_replace('.php', '', $plugin_file);
@@ -229,7 +229,7 @@ foreach ($plugins_files as $plugin_file) {
             </thead>
             <tbody>
 <?php
-$indexFile = SITEMAPXML_SITEMAPINDEX . '.xml';
+$indexFile = zen_config('SITEMAPXML_SITEMAPINDEX') . '.xml';
 $sitemapFiles = glob(DIR_FS_CATALOG . 'sitemap' . '*' . '.xml');
 if (empty($sitemapFiles)) {
     $sitemapFiles = [];
@@ -240,7 +240,7 @@ if (empty($sitemapFilesGZ)) {
 }
 $sitemapFiles = array_merge($sitemapFiles, $sitemapFilesGZ);
 
-if (SITEMAPXML_DIR_WS !== '') {
+if (zen_config('SITEMAPXML_DIR_WS') !== '') {
     $sitemapxml_dir_ws = SITEMAPXML_DIR_WS;
     $sitemapxml_dir_ws = trim($sitemapxml_dir_ws, '/');
     $sitemapxml_dir_ws .= '/';
@@ -262,16 +262,16 @@ $sitemapFiles = array_unique($sitemapFiles);
 clearstatcache();
 $l = strlen(DIR_FS_CATALOG);
 foreach ($sitemapFiles as $file) {
-    $file_exists = file_exists($file);
+    $file_exists = is_file($file);
     $f['name'] = substr($file, $l);
-    $f['size'] = ($file_exists === true) ? filesize($file) : 0;
+    $f['size'] = ($file_exists === true) ? (int)filesize($file) : 0;
     $f['time'] = ($file_exists === true) ? date(PHP_DATE_TIME_FORMAT, filemtime($file)) : '&mdash;';
     $f['perms'] = ($file_exists === true) ? substr(sprintf('%o', fileperms($file)), -4) : '&mdash;';
     $class = '';
     $comments = '';
     $type = '';
     $items = '';
-    if ($f['size'] == 0) {
+    if ($f['size'] === 0) {
         $class .= ' zero';
         $comments .= ' ' . TEXT_SITEMAPXML_FILE_LIST_COMMENTS_IGNORED;
     } elseif (!is_writable($file)) {
@@ -370,7 +370,7 @@ foreach ($sitemapFiles as $file) {
 <?php
 $sitemap_get_var = '';
 $sitemap_parameter = '';
-if (SITEMAPXML_EXECUTION_TOKEN !== '') {
+if (zen_config('SITEMAPXML_EXECUTION_TOKEN') !== '') {
     $sitemap_get_var = '&amp;token=' . SITEMAPXML_EXECUTION_TOKEN;
     $sitemap_parameter = ' token=' . SITEMAPXML_EXECUTION_TOKEN;
 }

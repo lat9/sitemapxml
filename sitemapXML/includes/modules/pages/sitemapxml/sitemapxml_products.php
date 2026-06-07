@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.1.0
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2015 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2015 Zen Cart Development Team
@@ -47,11 +49,11 @@ if ($sitemapXML->SitemapOpen('products', $last_date)) {
     global $queryCache;
 
     $query_cache_can_reset = (isset($queryCache) && is_object($queryCache) && method_exists($queryCache, 'reset'));
-    
+
     $file_main_product_image = DIR_WS_MODULES . zen_get_module_directory(FILENAME_MAIN_PRODUCT_IMAGE);
     $file_additional_images = DIR_WS_MODULES . zen_get_module_directory('additional_images.php');
 
-    $select = (SITEMAPXML_PRODUCTS_IMAGES === 'true') ? ', p.products_image, pd.products_name' : '';
+    $select = (zen_config('SITEMAPXML_PRODUCTS_IMAGES') === 'true') ? ', p.products_image, pd.products_name' : '';
     $products = $db->Execute(
         "SELECT p.products_id, p.master_categories_id, GREATEST(p.products_date_added, IFNULL(p.products_last_modified, '0001-01-01 00:00:00')) AS last_date,
                 p.products_sort_order AS priority, pd.language_id, p.products_type" . $select . "
@@ -61,9 +63,28 @@ if ($sitemapXML->SitemapOpen('products', $last_date)) {
                    AND pd.language_id IN (" . $sitemapXML->getLanguagesIDs() . ") " .
                 $from . "
           WHERE p.products_status = 1" . $where .
-          (SITEMAPXML_PRODUCTS_ORDERBY !== '' ? ' ORDER BY ' . SITEMAPXML_PRODUCTS_ORDERBY : '')
+          (zen_config('SITEMAPXML_PRODUCTS_ORDERBY') !== '' ? ' ORDER BY ' . zen_config('SITEMAPXML_PRODUCTS_ORDERBY') : '')
     );
     $sitemapXML->SitemapSetMaxItems($products->RecordCount());
+
+    $sitemapxml_products_images_size = zen_config('SITEMAPXML_PRODUCTS_IMAGES_SIZE');
+    if ($sitemapxml_products_images_size === 'small') {
+        $width = zen_config('SMALL_IMAGE_WIDTH');
+        $height = zen_config('SMALL_IMAGE_HEIGHT');
+
+    } elseif ($sitemapxml_products_images_size === 'medium') {
+        $width = zen_config('MEDIUM_IMAGE_WIDTH');
+        $height = zen_config('MEDIUM_IMAGE_HEIGHT');
+
+    } else {
+        $width = '';
+        $height = '';
+    }
+    $sitemapxml_products_images_function = zen_config('SITEMAPXML_PRODUCTS_IMAGES_FUNCTION') === 'true';
+    $sitemapxml_products_images_caption = zen_config('SITEMAPXML_PRODUCTS_IMAGES_CAPTION');
+    $sitemapxml_products_images_license = zen_config('SITEMAPXML_PRODUCTS_IMAGES_LICENSE');
+    $sitemapxml_products_use_cpath = zen_config('SITEMAPXML_PRODUCTS_USE_CPATH') === 'true';
+    $sitemapxml_products_changefreq = zen_config('SITEMAPXML_PRODUCTS_CHANGEFREQ');
     foreach ($products as $next_product) {
         $xtra = '';
         if (!empty($next_product['products_image']) && is_file(DIR_FS_CATALOG . DIR_WS_IMAGES . $products->fields['products_image'])) {
@@ -71,30 +92,24 @@ if ($sitemapXML->SitemapOpen('products', $last_date)) {
             $products_name = $next_product['products_name'];
             $_GET['products_id'] = $next_product['products_id'];
             require $file_main_product_image;
-            if (SITEMAPXML_PRODUCTS_IMAGES_ADDITIONAL === 'true') {
+            if (zen_config('SITEMAPXML_PRODUCTS_IMAGES_ADDITIONAL') === 'true') {
                 $flag_show_product_info_additional_images = 1;
                 require $file_additional_images;
             }
             unset($_GET['products_id']);
-            switch (SITEMAPXML_PRODUCTS_IMAGES_SIZE) {
+            switch ($sitemapxml_products_images_size) {
                 case 'small':
                     $img = DIR_WS_IMAGES . $products_image;
-                    $width = SMALL_IMAGE_WIDTH;
-                    $height = SMALL_IMAGE_HEIGHT;
                     break;
                 case 'medium':
                     $img = $products_image_medium;
-                    $width = MEDIUM_IMAGE_WIDTH;
-                    $height = MEDIUM_IMAGE_HEIGHT;
                     break;
                 case 'large':
                 default:
                     $img = $products_image_large;
-                    $width = '';
-                    $height = '';
                     break;
             }
-            if (SITEMAPXML_PRODUCTS_IMAGES_FUNCTION === 'true') {
+            if ($sitemapxml_products_images_function === true) {
                 preg_match('@src="([^"]*)"@', zen_image($img, '', $width, $height), $image_src);
                 $img = $image_src[1];
             }
@@ -104,10 +119,10 @@ if ($sitemapXML->SitemapOpen('products', $last_date)) {
                      'title' => $next_product['products_name'],
                 ],
             ];
-            $xtra = $sitemapXML->imagesTags($images, SITEMAPXML_PRODUCTS_IMAGES_CAPTION, SITEMAPXML_PRODUCTS_IMAGES_LICENSE);
+            $xtra = $sitemapXML->imagesTags($images, $sitemapxml_products_images_caption, $sitemapxml_products_images_license);
         }
 
-        if (SITEMAPXML_PRODUCTS_USE_CPATH !== 'true') {
+        if ($sitemapxml_products_use_cpath !== true) {
             $cPath_parm = '';
         } else {
             if (!isset($catsArray[$next_product['master_categories_id']])) {
@@ -122,7 +137,14 @@ if ($sitemapXML->SitemapOpen('products', $last_date)) {
             $queryCache->reset('ALL');
         }
 
-        $sitemapXML->writeItem($info_page, $cPath_parm . 'products_id=' . $next_product['products_id'], $next_product['language_id'], $next_product['last_date'], SITEMAPXML_PRODUCTS_CHANGEFREQ, $xtra);
+        $sitemapXML->writeItem(
+            $info_page,
+            $cPath_parm . 'products_id=' . $next_product['products_id'],
+            $next_product['language_id'],
+            $next_product['last_date'],
+            $sitemapxml_products_changefreq,
+            $xtra
+        );
     }
 
     $sitemapXML->SitemapClose();

@@ -2,7 +2,7 @@
 /**
  * Sitemap XML
  *
- * Last updated: v4.0.5
+ * Last updated: v4.1.0
  *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
@@ -15,13 +15,13 @@ $select = '';
 $from = '';
 $where = '';
 $order_by = '';
-if (SITEMAPXML_EZPAGES_ORDERBY !== '') {
+if (zen_config('SITEMAPXML_EZPAGES_ORDERBY') !== '') {
     // -----
     // With the addition of TABLE_EZPAGES_TEXT, previous versions of the ezpages' order-by
     // configuration setting don't include the 'p.' table prefix.  Add that if the
     // currently-configured order-by clause doesn't start with either 'p.' or 'pt.'.
     //
-    $order_by_elements = explode(',', SITEMAPXML_EZPAGES_ORDERBY);
+    $order_by_elements = explode(',', zen_config('SITEMAPXML_EZPAGES_ORDERBY'));
     foreach ($order_by_elements as $i => $element) {
         $element = ltrim($element);
         if (strpos($element, 'p.') !== 0 && strpos($element, 'pt.') !== 0) {
@@ -106,9 +106,9 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
             $link = FILENAME_EZPAGES;
             $linkParm = 'id=' . $ez_page['pages_id'] . ($ez_page['toc_chapter'] > 0 ? '&chapter=' . $ez_page['toc_chapter'] : '');
         } else {
-            $link = (substr($ez_page['alt_url'], 0, 4) === 'http') ?
+            $link = str_starts_with($ez_page['alt_url'], 'http') ?
                 $ez_page['alt_url'] :
-                zen_href_link($ez_page['alt_url'], '', ($ez_page['page_is_ssl'] === '0' ? 'NONSSL' : 'SSL'), false, true, true);
+                zen_href_link($ez_page['alt_url'], '', 'SSL', false, true, true);
             $link = str_replace('&amp;', '&', $link);
             $link = preg_replace('/&&+/', '&', $link);
             $link = preg_replace('/&/', '&amp;', $link);
@@ -118,8 +118,11 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
                 $parse_url['path'] = '/';
             }
             $link_base_url = $parse_url['scheme'] . '://' . $parse_url['host'];
+            if (!empty($parse_url['port'])) {
+                $link_base_url .= ':' . $parse_url['port'];
+            }
             if ($link_base_url !== HTTP_SERVER && $link_base_url !== HTTPS_SERVER) {
-                echo sprintf(TEXT_ERRROR_EZPAGES_OUTOFBASE, $ez_page['alt_url'], $link) . '<br>';
+                echo sprintf(TEXT_ERRROR_EZPAGES_OUTOFBASE, $ez_page['alt_url'], $link . ', ' . $link_base_url) . '<br>';
                 $link = false;
             } elseif (basename($parse_url['path']) === 'index.php') {
                 $query_string = explode('&amp;', $parse_url['query']);
@@ -139,7 +142,7 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
         if ($link !== false) {
             $last_date = (!empty($ez_page['last_date']) && $ez_page['last_date'] > '0001-01-01 00:00:00') ? $ez_page['last_date'] : '';
             $ez_page['language_id'] = $ez_page['language_id'] ?? 0;
-            $sitemapXML->writeItem($link, $linkParm, $ez_page['language_id'], $last_date, SITEMAPXML_EZPAGES_CHANGEFREQ);
+            $sitemapXML->writeItem($link, $linkParm, $ez_page['language_id'], $last_date, zen_config('SITEMAPXML_EZPAGES_CHANGEFREQ'));
         }
     }
 

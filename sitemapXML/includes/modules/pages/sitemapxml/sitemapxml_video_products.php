@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.1.0
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2012 Zen Cart Development Team
@@ -36,6 +38,14 @@ if ($zen_SiteMapXML->SitemapOpen('products', $last_date, 'video')) {
            WHERE p.products_status = 1"
     );
     $zen_SiteMapXML->SitemapSetMaxItems(0);
+
+    if (SITEMAPXML_VIDEO_THUMBNAIL_SIZE === 'small') {
+        $width = zen_config('SMALL_IMAGE_WIDTH');
+        $height = zen_config('SMALL_IMAGE_HEIGHT');
+    } else {
+        $width = zen_config('MEDIUM_IMAGE_WIDTH');
+        $height = zen_config('MEDIUM_IMAGE_HEIGHT');
+    }
     foreach ($products as $next_product) {
         $langParm = $zen_SiteMapXML->getLanguageParameter($next_product['language_id']);
         if ($langParm !== false) {
@@ -45,16 +55,16 @@ if ($zen_SiteMapXML->SitemapOpen('products', $last_date, 'video')) {
                 $videoPlayerLoc = sprintf(SITEMAPXML_VIDEO_PLAYER, $videoContentLoc);
                 $products_image = $next_product['products_image'];
                 require $file_main_product_image;
-                switch (SITEMAPXML_VIDEO_THUMBNAIL_SIZE) {
+                switch (SITEMAPXML_VIDEO_THUMBNAIL_SIZE) {  //- Pseudo-configuration setting, see definition above.
                     case 'small':
-                        $img = zen_image(DIR_WS_IMAGES . $products_image, '', SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
+                        $img = zen_image(DIR_WS_IMAGES . $products_image, '', $width, $height);
                         break;
                     case 'medium':
-                        $img = zen_image($products_image_medium, '', MEDIUM_IMAGE_WIDTH, MEDIUM_IMAGE_HEIGHT);
+                        $img = zen_image($products_image_medium, '', $width, $height);
                         break;
                     case 'large':
                     default:
-                        $img = zen_image($products_image_large, '', MEDIUM_IMAGE_WIDTH, MEDIUM_IMAGE_HEIGHT);
+                        $img = zen_image($products_image_large, '', $width, $height);
                         break;
                 }
                 if (preg_match('@src="([^"]*)"@', $img, $match)) {

@@ -9,11 +9,9 @@
  * @link hideCategories http://www.zen-cart.com/downloads.php?do=file&id=254
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: sitemapxml_categories.php, v 3.7 07.07.2016 11:25:41 AndrewBerezin $
+ *
+ * Last updated: v4.1.0
  */
-// BOF hideCategories
-// BOF products_in_subcategories
-// BOF categories_paging
-
 echo '<h3>' . TEXT_HEAD_CATEGORIES . '</h3>';
 
 // BOF hideCategories
@@ -36,7 +34,7 @@ $last_date = max($table_status->fields['Update_time'], $last_date->fields['last_
 
 $select = '';
 if ($sitemapXML->SitemapOpen('categories', $last_date)) {
-    if (SITEMAPXML_CATEGORIES_IMAGES === 'true') {
+    if (zen_config('SITEMAPXML_CATEGORIES_IMAGES') === 'true') {
         $select = ", c.categories_image, cd.categories_name";
     }
     $categories = $db->Execute(
@@ -48,9 +46,13 @@ if ($sitemapXML->SitemapOpen('categories', $last_date)) {
                 $from . "
           WHERE c.categories_status = 1" .
                 $where .
-         (SITEMAPXML_CATEGORIES_ORDERBY !== '' ? ' ORDER BY ' . SITEMAPXML_CATEGORIES_ORDERBY : '')
+         (zen_config('SITEMAPXML_CATEGORIES_ORDERBY') !== '' ? ' ORDER BY ' . zen_config('SITEMAPXML_CATEGORIES_ORDERBY') : '')
     );
     $sitemapXML->SitemapSetMaxItems($categories->RecordCount());
+    
+    $show_nested_as_products = (zen_config('SHOW_NESTED_AS_PRODUCTS') === 'True');  //- From products_in_subcategories addon
+    $sitemapxml_categories_changefreq = zen_config('SITEMAPXML_CATEGORIES_CHANGEFREQ');
+    $sitemapxml_categories_paging = (zen_config('SITEMAPXML_CATEGORIES_PAGING') === 'true');
     foreach ($categories as $next_category) {
         $xtra = '';
         $sql =
@@ -62,7 +64,7 @@ if ($sitemapXML->SitemapOpen('categories', $last_date)) {
                 AND p2c.categories_id = " . $next_category['categories_id'];
 
         // BOF products_in_subcategories
-        if (defined('SHOW_NESTED_AS_PRODUCTS') && SHOW_NESTED_AS_PRODUCTS === 'True') {
+        if ($show_nested_as_products === true) {
             $subcategories_array = [$next_category['categories_id']];
             zen_get_subcategories($subcategories_array, (int)$next_category['categories_id']);
             $sql =
@@ -76,8 +78,8 @@ if ($sitemapXML->SitemapOpen('categories', $last_date)) {
         // EOF products_in_subcategories
 
         $products = $db->Execute($sql);
-        if (SKIP_SINGLE_PRODUCT_CATEGORIES !== 'True' || $products->fields['total'] !== '1') {
-            if (SITEMAPXML_CATEGORIES_IMAGES === 'true' && !empty($next_category['categories_image']) && is_file(DIR_FS_CATALOG . DIR_WS_IMAGES . $next_category['categories_image'])) {
+        if (zen_config('SKIP_SINGLE_PRODUCT_CATEGORIES') !== 'True' || $products->fields['total'] !== '1') {
+            if (zen_config('SITEMAPXML_CATEGORIES_IMAGES') === 'true' && !empty($next_category['categories_image']) && is_file(DIR_FS_CATALOG . DIR_WS_IMAGES . $next_category['categories_image'])) {
                 $images = [
                     [
                         'file' => DIR_WS_IMAGES . $next_category['categories_image'],
@@ -88,17 +90,15 @@ if ($sitemapXML->SitemapOpen('categories', $last_date)) {
             }
 
             $cat_path = $sitemapXML->GetFullcPath($next_category['categories_id']);
-            $sitemapXML->writeItem(FILENAME_DEFAULT, 'cPath=' . $cat_path, $next_category['language_id'], $next_category['last_date'], SITEMAPXML_CATEGORIES_CHANGEFREQ, $xtra);
+            $sitemapXML->writeItem(FILENAME_DEFAULT, 'cPath=' . $cat_path, $next_category['language_id'], $next_category['last_date'], $sitemapxml_categories_changefreq, $xtra);
 
-            // BOF categories_paging
-            if (SITEMAPXML_CATEGORIES_PAGING === 'true') {
-                $total_pages = ceil($products->fields['total']/MAX_DISPLAY_PRODUCTS_LISTING);
+            if ($sitemapxml_categories_paging === true) {
+                $total_pages = ceil($products->fields['total'] / zen_config('MAX_DISPLAY_PRODUCTS_LISTING'));
                 for ($ind_page = 2; $ind_page <= $total_pages; $ind_page++) {
-                    $sitemapXML->writeItem(FILENAME_DEFAULT, 'cPath=' . $cat_path . '&page=' . $ind_page, $next_category['language_id'], $next_category['last_date'], SITEMAPXML_CATEGORIES_CHANGEFREQ);
+                    $sitemapXML->writeItem(FILENAME_DEFAULT, 'cPath=' . $cat_path . '&page=' . $ind_page, $next_category['language_id'], $next_category['last_date'], $sitemapxml_categories_changefreq);
                 }
 
             }
-            // EOF categories_paging
         }
     }
 
