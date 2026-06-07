@@ -68,26 +68,6 @@ if ($sitemapXML->dbColumnExist(TABLE_EZPAGES, 'date_added') && $sitemapXML->dbCo
 
 if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
     $page_query_sql =
-        "SELECT p.toc_chapter
-           FROM " . TABLE_EZPAGES . " p " . $from . "
-          WHERE p.alt_url_external = ''
-            AND (
-                p.status_visible = 1
-                OR (p.status_header = 1 AND p.header_sort_order > 0)
-                OR (p.status_sidebox = 1 AND p.sidebox_sort_order > 0)
-                OR (p.status_footer = 1 AND p.footer_sort_order > 0)
-                )
-           AND p.status_toc != 0" .
-           $where . "
-         GROUP BY p.toc_chapter";
-    $page_query = $db->Execute($page_query_sql); // pages_id
-    $toc_chapter_array = [];
-    foreach ($page_query as $next_chapter) {
-        $toc_chapter_array[$next_chapter['toc_chapter']] = $next_chapter['toc_chapter'];
-    }
-
-    // - ensures only exludes ezpages that are disabled from all 
-    $page_query_sql =
         "SELECT *" . $select . "
            FROM " . TABLE_EZPAGES . " p " . $from . "
           WHERE p.alt_url_external = ''
@@ -97,8 +77,9 @@ if ($sitemapXML->SitemapOpen('ezpages', $last_date)) {
                 OR (p.status_sidebox = 1 AND p.sidebox_sort_order > 0)
                 OR (p.status_footer = 1 AND p.footer_sort_order > 0)
                 OR p.status_toc != 0
-            )" .
-            $where . (($order_by !== '') ? " ORDER BY $order_by" : '');
+            ) " .
+            $where .
+            (($order_by !== '') ? " ORDER BY $order_by" : '');
     
     $page_query = $db->Execute($page_query_sql); // pages_id
     $sitemapXML->SitemapSetMaxItems($page_query->RecordCount());

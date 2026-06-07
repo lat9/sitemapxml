@@ -114,8 +114,10 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.1.0-beta1 2026-06-07 (lat9)
-  - Correct double-encoding of URL parameters in sitemap links.
+- v4.1.0-beta1 2026-06-07 (lat9, highburyeye)
+  - Don't include disabled pages that are part of a chapter.
+  - Use `zen_config` to access database-configuration settings, preparation for zc300+.
+  - Correct double-encoding for non-ASCII characters in 'pretty' URLs.
 - v4.0.5 2025-05-31 (lat9)
   - Don't remove spaces from EZ-Pages' sort-order, results in MySQL error.
   - EZ-Pages with a `Visible` status are now included, regardless of header/footer/sidebox status.
