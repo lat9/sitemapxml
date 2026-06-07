@@ -10,7 +10,7 @@
  * @link http://www.sitemaps.org/
  * @version $Id: sitemapxml.php, v 3.9.7 highburyeye 02/05/2023
  *
- * Last updated: v4.0.4
+ * Last updated: v4.1.0
  */
 zen_define_default('TABLE_SITEMAPXML_TEMP', DB_PREFIX . 'sitemapxml_temp');
 zen_define_default('SITEMAPXML_MAX_ENTRIES', 5000);
@@ -269,7 +269,6 @@ class zen_SiteMapXML
                 $loc = $m[2];
             }
         }
-        $loc = $this->_url_encode($loc);
 
         if (!$this->_checkDuplicateLoc($loc)) {
             return false;

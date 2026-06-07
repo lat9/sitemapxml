@@ -22,7 +22,7 @@ It can be downloaded from the Zen Cart Plugins repository here: https://www.zen-
 
 Zen-Cart Versions Supported
 --------------
-1.5.8[a], 2.0.x, 2.1.0
+1.5.8[a], 2.0.x, 2.1.0, v2.2.x
 
 Support thread
 --------------
@@ -51,8 +51,8 @@ Features:
 * Using languages file and etc.
 * Generation of a sitemap index file
 * Generation of xml-sitemaps for (separate files):
-  1. Products with images (supports multilangual products, support hideCategories)
-  2. Categories with images (supports multilangual categories, support hideCategories)
+  1. Products with images (supports multilingual products, support hideCategories)
+  2. Categories with images (supports multilingual categories, support hideCategories)
   3. Manufacturers with images
   4. Main (Home) page
   5. Reviews
@@ -92,7 +92,7 @@ Install:
 --------------
 0. BACK UP your database & store.
 1. Unzip the SitemapXML package to your local hard drive, retaining the folder structure.
-2. Rename the `YOUR_Admin` folder in the `sitemapXML`older to match the name of your admin folder.
+2. Rename the `YOUR_Admin` folder in the `sitemapXML` folder to match the name of your site's Zen Cart admin folder.
 3. Upload the files from `sitemapXML` to the root of your store.  **Do not** upload the `sitemapXML` folder, just the **contents** of this folder and be sure to copy **all** of the files to your store!! Most issues are caused by store owners who decide to **not** load **all** of the module files).
 4. Set permissions on the directory `/sitemap/` to 777.
 5. Go to ***Admin :: Configuration :: Sitemap XML*** and setup all parameters.
@@ -105,7 +105,7 @@ Upgrade:
 
 0. BACK UP your database & store.
 1. Unzip the SitemapXML package to your local hard drive, retaining the folder structure.
-2. Rename the `YOUR_Admin` folder in the `sitemapXML` folder to match the name of your admin folder.
+2. Rename the `YOUR_Admin` folder in the `sitemapXML` folder to match the name of your site's Zen Cart admin folder.
 3. Upload the files from `sitemapXML` to the root of your store.  **Do not** upload the `sitemapXML` folder, just the **contents** of this folder and be sure to copy **all** of the files to your store!! Most issues are caused by store owners who decide to **not** load **all** of the module files).
 
 Un-Install:
@@ -114,6 +114,8 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
+- v4.1.0-beta1 2026-06-07 (lat9)
+  - Correct double-encoding of URL parameters in sitemap links.
 - v4.0.5 2025-05-31 (lat9)
   - Don't remove spaces from EZ-Pages' sort-order, results in MySQL error.
   - EZ-Pages with a `Visible` status are now included, regardless of header/footer/sidebox status.
