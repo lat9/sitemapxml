@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.1.0
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2012 Zen Cart Development Team
@@ -16,7 +18,7 @@
 страницы отзывов
 страницы архивов
 */
-if ($sitemapXML->dbTableExist('TABLE_NEWS_ARTICLES') === false) {
+if ($sitemapXML->dbTableExist('TABLE_NEWS_ARTICLES') === false || !defined('FILENAME_NEWS_ARTICLE')) {
     return;
 }
 
@@ -38,11 +40,11 @@ if ($sitemapXML->SitemapOpen('newsarticles', $last_date)) {
                    AND nt.news_article_text != ''
           WHERE n.news_status = 1
             AND n.news_date_published <= NOW()" .
-          (SITEMAPXML_NEWS_ORDERBY !== '' ? ' ORDER BY ' . SITEMAPXML_NEWS_ORDERBY : '')
+          (zen_config('SITEMAPXML_NEWS_ORDERBY') !== '' ? ' ORDER BY ' . zen_config('SITEMAPXML_NEWS_ORDERBY') : '')
     );
     $sitemapXML->SitemapSetMaxItems($news->RecordCount());
     foreach ($news as $next_item) {
-        $sitemapXML->writeItem(FILENAME_NEWS_ARTICLE, 'article_id=' . $next_item['article_id'], $next_item['language_id'], $next_item['last_date'], SITEMAPXML_NEWS_CHANGEFREQ);
+        $sitemapXML->writeItem(FILENAME_NEWS_ARTICLE, 'article_id=' . $next_item['article_id'], $next_item['language_id'], $next_item['last_date'], zen_config('SITEMAPXML_NEWS_CHANGEFREQ'));
     }
 
     $sitemapXML->SitemapClose();
@@ -61,7 +63,7 @@ if (false) {
                               AND news_date_published <= NOW()
                             GROUP BY news_date_published DESC");
       $sitemapXML->SitemapSetMaxItems($news->RecordCount());
-      $link_ym_array = array();
+      $link_ym_array = [];
       while (!$news->EOF) {
         $date_ymd = substr($news->fields['news_date_published'], 0, 10);
         $date_ym  = substr($news->fields['news_date_published'], 0, 7);

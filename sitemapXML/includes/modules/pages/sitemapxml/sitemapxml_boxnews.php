@@ -2,7 +2,7 @@
 /**
  * Sitemap XML
  *
- * Last updated: v4.0.4
+ * Last updated: v4.1.0
  *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
@@ -12,7 +12,10 @@
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: sitemapxml_boxnews.php, v 3.2.2 07.05.2012 19:12 AndrewBerezin $
  */
-if ($sitemapXML->dbTableExist('TABLE_BOX_NEWS') === false || $sitemapXML->dbTableExist('TABLE_BOX_NEWS_CONTENT') === false) {
+if ($sitemapXML->dbTableExist('TABLE_BOX_NEWS') === false || $sitemapXML->dbTableExist('TABLE_BOX_NEWS_CONTENT') === false || !defined('FILENAME_MORE_NEWS')) {
+    return;
+}
+if ($sitemapXML->dbColumnExist(TABLE_BOX_NEWS, 'news_published_date') === false) {
     return;
 }
 
@@ -36,11 +39,11 @@ if ($sitemapXML->SitemapOpen('boxnews', $last_date)) {
                    AND nc.news_title != ''
           WHERE n.news_status = 1
             AND NOW() BETWEEN n.news_start_date AND n.news_end_date" .
-          (SITEMAPXML_BOXNEWS_ORDERBY !== '' ? ' ORDER BY ' . SITEMAPXML_BOXNEWS_ORDERBY : '')
+          (zen_config('SITEMAPXML_BOXNEWS_ORDERBY') !== '' ? ' ORDER BY ' . zen_config('SITEMAPXML_BOXNEWS_ORDERBY') : '')
     );
     $sitemapXML->SitemapSetMaxItems($news->RecordCount());
     foreach ($news as $next_item) {
-        $sitemapXML->writeItem(FILENAME_MORE_NEWS, 'news_id=' . $next_item['box_news_id'], $next_item['language_id'], $next_item['last_date'], SITEMAPXML_BOXNEWS_CHANGEFREQ);
+        $sitemapXML->writeItem(FILENAME_MORE_NEWS, 'news_id=' . $next_item['box_news_id'], $next_item['language_id'], $next_item['last_date'], zen_config('SITEMAPXML_BOXNEWS_CHANGEFREQ'));
     }
 
     $sitemapXML->SitemapClose();

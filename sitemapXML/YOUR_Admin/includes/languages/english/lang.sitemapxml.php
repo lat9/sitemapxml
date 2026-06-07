@@ -2,7 +2,7 @@
 /**
  * Sitemap XML Feed
  *
- * Last updated: v4.0.2
+ * Last updated: v4.1.0
  *
  * @package Sitemap XML Feed
  * @copyright Copyright 2005-2016 Andrew Berezin eCommerce-Service.com
@@ -66,8 +66,8 @@ $define = [
     'TEXT_MESSAGE_FILE_ERROR_DELETED' => 'Error deleting file %s',
 ];
 
-if (defined('SITEMAPXML_SITEMAPINDEX')) {
-    $sitemapindex_http_link = HTTP_CATALOG_SERVER . DIR_WS_CATALOG . SITEMAPXML_SITEMAPINDEX . '.xml';
+if (zen_config('SITEMAPXML_SITEMAPINDEX') !== null) {
+    $sitemapindex_http_link = HTTP_CATALOG_SERVER . DIR_WS_CATALOG . zen_config('SITEMAPXML_SITEMAPINDEX') . '.xml';
     $define['SITEMAPXML_SITEMAPINDEX_HTTP_LINK'] = $sitemapindex_http_link;
     $define['TEXT_SITEMAPXML_TIPS_TEXT'] =
         '<p>You can read all about sitemaps at <strong><a href="https://sitemaps.org/" target="_blank" rel="noopener noreferrer" class="splitPageLink">[Sitemaps.org]</a></strong>.</p>

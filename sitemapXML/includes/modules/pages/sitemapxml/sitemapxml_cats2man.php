@@ -9,6 +9,8 @@
  * @link hideCategories http://www.zen-cart.com/downloads.php?do=file&id=254
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: sitemapxml_cats2man.php v 1.1 27.03.2015 17:07:46 AndrewBerezin $
+ *
+ * Last updated: v4.1.0
  */
 echo '<h3>' . TEXT_HEAD_CATS2MAN . '</h3>';
 
@@ -37,13 +39,16 @@ if ($sitemapXML->SitemapOpen('cats2man', $last_date)) {
                 $from . "
           WHERE c.categories_status = 1" .
           $where .
-          (SITEMAPXML_CATEGORIES_ORDERBY !== '' ? ' ORDER BY ' . SITEMAPXML_CATEGORIES_ORDERBY : ''));
+          (zen_config('SITEMAPXML_CATEGORIES_ORDERBY') !== '' ? ' ORDER BY ' . zen_config('SITEMAPXML_CATEGORIES_ORDERBY') : ''));
     $sitemapXML->SitemapSetMaxItems($categories->RecordCount());
+
+    $show_nested_as_products = (zen_config('SHOW_NESTED_AS_PRODUCTS') === 'True');  //- From products_in_subcategories addon
+    $sitemapxml_categories_changefreq = zen_config('SITEMAPXML_CATEGORIES_CHANGEFREQ');
     foreach ($categories as $next_category) {
         $subcategories_array = [$next_category['categories_id']];
 
         // BOF products_in_subcategories
-        if (defined('SHOW_NESTED_AS_PRODUCTS') && SHOW_NESTED_AS_PRODUCTS === 'True') {
+        if ($show_nested_as_products === true) {
             zen_get_subcategories($subcategories_array, (int)$next_category['categories_id']);
         }
         // EOF products_in_subcategories
@@ -57,7 +62,7 @@ if ($sitemapXML->SitemapOpen('cats2man', $last_date)) {
                        AND p2c.categories_id IN ($subcategories_list)
               WHERE p.products_status = 1";
         $products = $db->Execute($sql);
-        if (SKIP_SINGLE_PRODUCT_CATEGORIES !== 'True' && $products->fields['total'] === '1') {
+        if (zen_config('SKIP_SINGLE_PRODUCT_CATEGORIES') !== 'True' && $products->fields['total'] === '1') {
             $products->fields['total'] = 2;
         }
         if ($products->fields['total'] > 1) {
@@ -73,7 +78,13 @@ if ($sitemapXML->SitemapOpen('cats2man', $last_date)) {
                   WHERE p.products_status = 1";
             $manufacturers = $db->Execute($sql);
             foreach ($manufacturers as $next_manufacturer) {
-                $sitemapXML->writeItem(FILENAME_DEFAULT, 'cPath=' . $cat_path . '&filter_id=' . $next_manufacturer['manufacturers_id'], $next_category['language_id'], $next_category['last_date'], SITEMAPXML_CATEGORIES_CHANGEFREQ, '');
+                $sitemapXML->writeItem(
+                    FILENAME_DEFAULT,
+                    'cPath=' . $cat_path . '&filter_id=' . $next_manufacturer['manufacturers_id'],
+                    $next_category['language_id'],
+                    $next_category['last_date'],
+                    $sitemapxml_categories_changefreq
+                );
                 $sql =
                     "SELECT COUNT(*) AS total
                       FROM " . TABLE_PRODUCTS . " p
@@ -83,9 +94,14 @@ if ($sitemapXML->SitemapOpen('cats2man', $last_date)) {
                      WHERE p.products_status = 1
                        AND p.manufacturers_id = " . $next_manufacturer['manufacturers_id'];
                 $products = $db->Execute($sql);
-                $total_pages = ceil($products->fields['total']/MAX_DISPLAY_PRODUCTS_LISTING);
+                $total_pages = ceil($products->fields['total'] / zen_config('MAX_DISPLAY_PRODUCTS_LISTING'));
                 for ($ind_page = 2; $ind_page <= $total_pages; $ind_page++) {
-                    $sitemapXML->writeItem(FILENAME_DEFAULT, 'cPath=' . $cat_path . '&filter_id=' . $next_manufacturer['manufacturers_id'] . '&page=' . $ind_page, $next_category['language_id'], $next_category['last_date'], SITEMAPXML_CATEGORIES_CHANGEFREQ);
+                    $sitemapXML->writeItem(
+                        FILENAME_DEFAULT,
+                        'cPath=' . $cat_path . '&filter_id=' . $next_manufacturer['manufacturers_id'] . '&page=' . $ind_page, $next_category['language_id'],
+                        $next_category['last_date'],
+                        $sitemapxml_categories_changefreq
+                    );
                 }
             }
           unset($manufacturers);

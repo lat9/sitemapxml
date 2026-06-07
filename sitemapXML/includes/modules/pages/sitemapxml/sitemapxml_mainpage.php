@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.1.0
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2012 Zen Cart Development Team
@@ -15,10 +17,10 @@ if ($sitemapXML->SitemapOpen('mainpage')) {
         "SELECT *
            FROM " . TABLE_LANGUAGES . " l
           WHERE l.languages_id IN (" . $sitemapXML->getLanguagesIDs() . ") " .
-          (SITEMAPXML_HOMEPAGE_ORDERBY !== '' ? "ORDER BY " . SITEMAPXML_HOMEPAGE_ORDERBY : ''));
+          (zen_config('SITEMAPXML_HOMEPAGE_ORDERBY') !== '' ? "ORDER BY " . zen_config('SITEMAPXML_HOMEPAGE_ORDERBY') : ''));
     $sitemapXML->SitemapSetMaxItems($languages->RecordCount());
     foreach ($languages as $next_language) {
-        $sitemapXML->writeItem(FILENAME_DEFAULT, '', $next_language['languages_id'], '', SITEMAPXML_HOMEPAGE_CHANGEFREQ);
+        $sitemapXML->writeItem(FILENAME_DEFAULT, '', $next_language['languages_id'], '', zen_config('SITEMAPXML_HOMEPAGE_CHANGEFREQ'));
     }
     $sitemapXML->SitemapClose();
     unset($languages);

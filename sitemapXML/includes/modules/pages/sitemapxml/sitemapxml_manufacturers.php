@@ -2,7 +2,7 @@
 /**
  * Sitemap XML
  *
- * Last updated: v4.0.4
+ * Last updated: v4.1.0
  *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
@@ -18,7 +18,7 @@ $last_date = $db->Execute(
 );
 $table_status = $db->Execute("SHOW TABLE STATUS LIKE '" . TABLE_MANUFACTURERS . "'");
 $last_date = max($table_status->fields['Update_time'], $last_date->fields['last_date']);
-$select = (SITEMAPXML_MANUFACTURERS_IMAGES === 'true') ? ', m.manufacturers_image, m.manufacturers_name' : '';
+$select = (zen_config('SITEMAPXML_MANUFACTURERS_IMAGES') === 'true') ? ', m.manufacturers_image, m.manufacturers_name' : '';
 if ($sitemapXML->SitemapOpen('manufacturers', $last_date)) {
     $manufacturers = $db->Execute(
         "SELECT m.manufacturers_id, GREATEST(m.date_added, IFNULL(m.last_modified, '0001-01-01 00:00:00')) AS last_date, mi.languages_id" . $select . "
@@ -26,9 +26,13 @@ if ($sitemapXML->SitemapOpen('manufacturers', $last_date)) {
                 INNER JOIN " . TABLE_MANUFACTURERS_INFO . " mi
                     ON mi.manufacturers_id = m.manufacturers_id
                    AND mi.languages_id IN (" . $sitemapXML->getLanguagesIDs() . ") " .
-           (SITEMAPXML_MANUFACTURERS_ORDERBY !== '' ? 'ORDER BY ' . SITEMAPXML_MANUFACTURERS_ORDERBY : '')
+           (zen_config('SITEMAPXML_MANUFACTURERS_ORDERBY') !== '' ? 'ORDER BY ' . zen_config('SITEMAPXML_MANUFACTURERS_ORDERBY') : '')
     );
     $sitemapXML->SitemapSetMaxItems($manufacturers->RecordCount());
+
+    $sitemapxml_manufacturers_changefreq = zen_config('SITEMAPXML_MANUFACTURERS_CHANGEFREQ');
+    $sitemapxml_manufacturers_images_caption = zen_config('SITEMAPXML_MANUFACTURERS_IMAGES_CAPTION');
+    $sitemapxml_manufacturers_images_license = zen_config('SITEMAPXML_MANUFACTURERS_IMAGES_LICENSE');
     foreach ($manufacturers as $next_manufacturer) {
         // -----
         // Don't include manufacturers with no products.
@@ -52,14 +56,14 @@ if ($sitemapXML->SitemapOpen('manufacturers', $last_date)) {
                     'title' => $next_manufacturer['manufacturers_name'],
                 ],
             ];
-            $xtra = $sitemapXML->imagesTags($images, SITEMAPXML_MANUFACTURERS_IMAGES_CAPTION, SITEMAPXML_MANUFACTURERS_IMAGES_LICENSE);
+            $xtra = $sitemapXML->imagesTags($images, $sitemapxml_manufacturers_images_caption, $sitemapxml_manufacturers_images_license);
         }
         $sitemapXML->writeItem(
             FILENAME_DEFAULT,
             'manufacturers_id=' . $next_manufacturer['manufacturers_id'],
             $next_manufacturer['languages_id'],
             $next_manufacturer['last_date'] ?? $last_date,
-            SITEMAPXML_MANUFACTURERS_CHANGEFREQ,
+            $sitemapxml_manufacturers_changefreq,
             $xtra
         );
     }

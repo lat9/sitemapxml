@@ -2,7 +2,7 @@
 /**
  * Sitemap XML
  *
- * Last updated: v4.0.3
+ * Last updated: v4.1.0
  *
  * @package Sitemap XML
  * @copyright Copyright 2005-2015 Andrew Berezin eCommerce-Service.com
@@ -31,7 +31,7 @@ if ($sitemapXML->SitemapOpen('products_reviews', $last_date)) {
           WHERE p.products_status = 1
             AND r.status = 1
           GROUP BY r.products_id, rd.languages_id" .
-          (SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY !== '' ? " ORDER BY " . SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY : '');
+          (zen_config('SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY') !== '' ? " ORDER BY " . zen_config('SITEMAPXML_PRODUCTS_REVIEWS_ORDERBY') : '');
     $reviews = $db->Execute($sql);
 
     $sitemapXML->SitemapSetMaxItems($reviews->RecordCount());
@@ -41,7 +41,7 @@ if ($sitemapXML->SitemapOpen('products_reviews', $last_date)) {
             'products_id=' . $next_review['products_id'],
             $next_review['languages_id'],
             $next_review['last_date'] ?? $last_date,
-            SITEMAPXML_PRODUCTS_REVIEWS_CHANGEFREQ
+            zen_config('SITEMAPXML_PRODUCTS_REVIEWS_CHANGEFREQ')
         );
     }
 

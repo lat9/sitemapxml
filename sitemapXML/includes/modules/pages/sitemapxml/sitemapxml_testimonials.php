@@ -2,6 +2,8 @@
 /**
  * Sitemap XML
  *
+ * Last updated: v4.1.0
+ *
  * @package Sitemap XML
  * @copyright Copyright 2005-2012 Andrew Berezin eCommerce-Service.com
  * @copyright Copyright 2003-2012 Zen Cart Development Team
@@ -10,7 +12,7 @@
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: sitemapxml_testimonials.php, v 3.2.2 07.05.2012 19:12 AndrewBerezin $
  */
-if ($sitemapXML->dbTableExist('TABLE_TESTIMONIALS_MANAGER') === false) {
+if ($sitemapXML->dbTableExist('TABLE_TESTIMONIALS_MANAGER') === false || !defined('FILENAME_TESTIMONIALS_MANAGER')) {
     return;
 }
 
@@ -26,11 +28,17 @@ if ($sitemapXML->SitemapOpen('testimonials', $last_date->fields['last_date'])) {
            FROM " . TABLE_TESTIMONIALS_MANAGER . " t
           WHERE t.status = 1
             AND t.language_id IN (" . $sitemapXML->getLanguagesIDs() . ") " .
-          (SITEMAPXML_TESTIMONIALS_ORDERBY != '' ? "ORDER BY " . SITEMAPXML_TESTIMONIALS_ORDERBY : '')
+          (zen_config('SITEMAPXML_TESTIMONIALS_ORDERBY') != '' ? "ORDER BY " . zen_config('SITEMAPXML_TESTIMONIALS_ORDERBY') : '')
     );
     $sitemapXML->SitemapSetMaxItems($testimonials->RecordCount());
     foreach ($testimonials as $next_item) {
-        $sitemapXML->writeItem(FILENAME_TESTIMONIALS_MANAGER, 'testimonials_id=' . $next_item['testimonials_id'], $next_item['language_id'], $next_item['last_date'], SITEMAPXML_TESTIMONIALS_CHANGEFREQ);
+        $sitemapXML->writeItem(
+            FILENAME_TESTIMONIALS_MANAGER,
+            'testimonials_id=' . $next_item['testimonials_id'],
+            $next_item['language_id'],
+            $next_item['last_date'],
+            zen_config('SITEMAPXML_TESTIMONIALS_CHANGEFREQ')
+        );
     }
 
     $sitemapXML->SitemapClose();
