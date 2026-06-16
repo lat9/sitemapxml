@@ -11,7 +11,7 @@ if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
 
-define('SITEMAPXML_CURRENT_VERSION', '4.1.0-beta1');
+define('SITEMAPXML_CURRENT_VERSION', '4.1.0');
 
 // -----
 // Wait until an admin is logged in before seeing if any initialization steps need to be performed.
@@ -19,7 +19,7 @@ define('SITEMAPXML_CURRENT_VERSION', '4.1.0-beta1');
 //
 // Nothing to do if already installed at the current version!
 //
-if (!isset($_SESSION['admin_id']) || (defined('SITEMAPXML_VERSION') && SITEMAPXML_VERSION === SITEMAPXML_CURRENT_VERSION)) {
+if (!isset($_SESSION['admin_id']) || zen_config('SITEMAPXML_VERSION') === SITEMAPXML_CURRENT_VERSION) {
     return;
 }
 
@@ -86,10 +86,7 @@ if ($config_check->EOF) {
         }
     }
 }
-
-if (!defined('SITEMAPXML_VERSION')) {
-    define('SITEMAPXML_VERSION', '0.0.0');
-}
+zen_define_default('SITEMAPXML_VERSION', '0.0.0');
 
 // ------
 // Correct an older, misnamed configuration setting.
@@ -462,7 +459,7 @@ $install_configuration = [
 // Apply configuration additions and updates.
 //
 foreach ($install_configuration as $key => $sql_values) {
-    list($configuration_title, $configuration_value, $configuration_description, $sort_order, $use_function, $set_function) = $sql_values;
+    [$configuration_title, $configuration_value, $configuration_description, $sort_order, $use_function, $set_function] = $sql_values;
     $configuration_title = $db->prepare_input($configuration_title);
     $configuration_description = $db->prepare_input($configuration_description);
     $use_function = ($use_function === null) ? 'NULL' : ("'" . $db->prepare_input($use_function) . "'");
@@ -509,11 +506,11 @@ if (!zen_page_key_exists('sitemapxmlConfig')) {
 // configuration setting don't include the 'p.' table prefix.  Add that if the
 // currently-configured order-by clause elements don't start with either 'p.' or 'pt.'.
 //
-if (defined('SITEMAPXML_EZPAGES_ORDERBY') && SITEMAPXML_EZPAGES_ORDERBY !== '') {
-    $order_by_elements = explode(',', SITEMAPXML_EZPAGES_ORDERBY);
+if (zen_config('SITEMAPXML_EZPAGES_ORDERBY') !== '') {
+    $order_by_elements = explode(',', zen_config('SITEMAPXML_EZPAGES_ORDERBY'));
     foreach ($order_by_elements as $i => $element) {
         $element = ltrim($element);
-        if (strpos($element, 'p.') !== 0 && strpos($element, 'pt.') !== 0) {
+        if (!str_starts_with($element, 'p.') && !str_starts_with($element, 'pt.')) {
             $order_by_elements[$i] = 'p.' . $element;
         }
     }

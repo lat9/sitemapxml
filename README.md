@@ -1,7 +1,7 @@
 # SitemapXML
 
 ## Version
-#### v4.0.5 31.May.2025
+#### v4.1.0 16.June.2026
 
 ### Authors
 
@@ -114,7 +114,7 @@ See [this](https://github.com/lat9/sitemapxml/wiki/Uninstalling) Wiki article fo
 
 History
 --------------
-- v4.1.0-beta1 2026-06-07 (lat9, highburyeye)
+- v4.1.0 2026-06-16 (lat9, highburyeye)
   - Don't include disabled pages that are part of a chapter.
   - Use `zen_config` to access database-configuration settings, preparation for zc300+.
   - Correct double-encoding for non-ASCII characters in 'pretty' URLs.
