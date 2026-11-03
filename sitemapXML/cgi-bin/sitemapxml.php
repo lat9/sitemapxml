@@ -33,6 +33,12 @@ if (isset($_GET['debug']) && $_GET['debug'] === 'yes') {
     error_reporting(E_ALL & ~E_NOTICE);
 }
 
+
+// When run from cron, SCRIPT_NAME can be unset (e.g. the host's "php" is the CGI binary).
+// Zen Cart's init code reads it unguarded, and warnings are emitted.
+if (empty($_SERVER['SCRIPT_NAME'])) {
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+}
 if (empty($_SERVER['REQUEST_URI'])) {
     $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
 }
